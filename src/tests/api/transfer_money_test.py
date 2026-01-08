@@ -7,6 +7,7 @@ from src.main.api.generators.random_model_generator import RandomModelGenerator
 from src.main.api.models.requests.create_user_request import CreateUserRequest
 from src.main.api.models.requests.transfer_money_request import TransferMoneyRequest
 from src.main.api.models.responses.deposit_money_response import DepositMoneyResponse
+from src.main.api.specs.response_specs import ResponseSpecs
 
 
 @pytest.mark.api
@@ -36,9 +37,9 @@ class TestTransferMoney:
     @pytest.mark.parametrize(
         argnames='amount, error_value',
         argvalues=[
-            (-100, 'Transfer amount must be at least 0.01'),
-            (9999999, 'Transfer amount cannot exceed 10000'),
-            (10001, 'Transfer amount cannot exceed 10000')
+            (-100, ResponseSpecs.TRANSFER_MIN_AMOUNT),
+            (9999999, ResponseSpecs.TRANSFER_MAX_AMOUNT),
+            (10001, ResponseSpecs.TRANSFER_MAX_AMOUNT)
         ]
     )
     def test_invalid_transfer_money(self, user_request: CreateUserRequest,

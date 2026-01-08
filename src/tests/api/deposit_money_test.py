@@ -8,6 +8,7 @@ from src.main.api.generators.random_model_generator import RandomModelGenerator
 from src.main.api.models.requests.create_user_request import CreateUserRequest
 from src.main.api.models.requests.deposit_money_request import DepositMoneyRequest
 from src.main.api.models.responses.create_account_response import CreateAccountResponse
+from src.main.api.specs.response_specs import ResponseSpecs
 
 
 @pytest.mark.api
@@ -20,9 +21,9 @@ class TestDepositMoney:
     @pytest.mark.parametrize(
         argnames='balance, error_value',
         argvalues=[
-            (-100, 'Deposit amount must be at least 0.01'),
-            (0.0, 'Deposit amount must be at least 0.01'),
-            (5001, 'Deposit amount cannot exceed 5000')
+            (-100, ResponseSpecs.DEPOSIT_MIN_AMOUNT),
+            (0.0, ResponseSpecs.DEPOSIT_MIN_AMOUNT),
+            (5001, ResponseSpecs.DEPOSIT_MAX_AMOUNT)
         ]
     )
     def test_invalid_deposit_money(self, user_request: CreateUserRequest,

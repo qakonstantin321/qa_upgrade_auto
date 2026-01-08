@@ -5,6 +5,26 @@ from requests import Response
 
 
 class ResponseSpecs:
+    class Role:
+        USER = "USER"
+        ADMIN = "ADMIN"
+
+    # Username validation
+    USERNAME_CANNOT_BE_BLANK = "Username cannot be blank"
+    USERNAME_LENGTH_INVALID = "Username must be between 3 and 15 characters"
+    USERNAME_INVALID_CHARACTERS = "Username must contain only letters, digits, dashes, underscores, and dots"
+
+    # Deposit validation
+    DEPOSIT_MIN_AMOUNT = "Deposit amount must be at least 0.01"
+    DEPOSIT_MAX_AMOUNT = "Deposit amount cannot exceed 5000"
+
+    # Transfer validation
+    TRANSFER_MIN_AMOUNT = "Transfer amount must be at least 0.01"
+    TRANSFER_MAX_AMOUNT = "Transfer amount cannot exceed 10000"
+
+    # Profile validation
+    NAME_INVALID_FORMAT = "Name must contain two words with letters only"
+
     @staticmethod
     def _make_status_checker(expected_statuses: list[HTTPStatus]) -> Callable[[Response], None]:
         def check(response: Response):

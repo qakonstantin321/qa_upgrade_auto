@@ -3,6 +3,7 @@ import pytest
 from src.main.api.classes.api_manager import ApiManager
 from src.main.api.models.requests.create_user_request import CreateUserRequest
 from src.main.api.models.requests.update_profile_request import UpdateProfileRequest
+from src.main.api.specs.response_specs import ResponseSpecs
 
 
 @pytest.mark.api
@@ -28,5 +29,5 @@ class TestUpdateProfile:
         api_manager.user_steps.invalid_update_profile(
             user_request=user_request,
             update_profile_request=update_profile_request,
-            error_value='Name must contain two words with letters only'
+            error_value=ResponseSpecs.NAME_INVALID_FORMAT
         )
