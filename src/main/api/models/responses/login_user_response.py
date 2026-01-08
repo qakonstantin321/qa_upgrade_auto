@@ -1,6 +1,8 @@
+from typing import Literal
+
 from src.main.api.models.base_model import BaseModel
 
 
 class LoginUserResponse(BaseModel):
     username: str
-    role: str
+    role: Literal["USER", "ADMIN"]

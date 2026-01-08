@@ -1,8 +1,8 @@
 from typing import List
 
 from src.main.api.models.comparison.model_assertions import ModelAssertions
-from src.main.api.models.create_user_request import CreateUserRequest
-from src.main.api.models.create_user_response import CreateUserResponse
+from src.main.api.models.requests.create_user_request import CreateUserRequest
+from src.main.api.models.responses.create_user_response import CreateUserResponse
 from src.main.api.requests.skeleton.endpoint import Endpoint
 from src.main.api.requests.skeleton.requesters.crud_requester import CrudRequester
 from src.main.api.requests.skeleton.requesters.validated_crud_requester import ValidatedCrudRequester
@@ -12,7 +12,7 @@ from src.main.api.steps.base_steps import BaseSteps
 
 
 class AdminSteps(BaseSteps):
-    def create_user(self, user_request: CreateUserRequest):
+    def create_user(self, user_request: CreateUserRequest) -> CreateUserRequest:
         create_user_response: CreateUserResponse = ValidatedCrudRequester(
             RequestSpecs.admin_auth_spec(),
             Endpoint.ADMIN_CREATE_USER,
@@ -22,7 +22,7 @@ class AdminSteps(BaseSteps):
 
         self.created_objects.append(create_user_response)
 
-        return create_user_response
+        return user_request
 
     @staticmethod
     def create_invalid_user(user_request: CreateUserRequest, error_key: str, error_value: str):

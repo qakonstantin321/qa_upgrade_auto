@@ -4,7 +4,7 @@ from typing import Any, Generator, List
 import pytest
 
 from src.main.api.classes.api_manager import ApiManager
-from src.main.api.models.create_user_response import CreateUserResponse
+from src.main.api.models.responses.create_user_response import CreateUserResponse
 
 
 @pytest.fixture

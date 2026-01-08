@@ -1,8 +1,7 @@
-from src.main.api.models.create_user_request import CreateUserRequest
-from src.main.api.models.login_user_request import LoginUserRequest
+from src.main.api.models.requests.create_user_request import CreateUserRequest
+from src.main.api.models.requests.login_user_request import LoginUserRequest
 from src.main.api.requests.skeleton.endpoint import Endpoint
-from src.main.api.requests.skeleton.requesters.crud_requester import \
-    CrudRequester
+from src.main.api.requests.skeleton.requesters.crud_requester import CrudRequester
 from src.main.api.requests.steps.base_steps import BaseSteps
 from src.main.api.specs.request_specs import RequestSpecs
 from src.main.api.specs.response_specs import ResponseSpecs

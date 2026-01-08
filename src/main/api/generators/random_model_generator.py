@@ -1,8 +1,7 @@
 import random
 import uuid
 from datetime import datetime, timedelta
-from typing import (Annotated, Any, Callable, get_args, get_origin,
-                    get_type_hints)
+from typing import Annotated, Any, Callable, get_args, get_origin, get_type_hints
 
 import rstr
 

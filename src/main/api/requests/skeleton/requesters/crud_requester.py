@@ -36,7 +36,17 @@ class CrudRequester(HttpRequest, CrudEndpointInterface):
         self.response_spec(response)
         return response
 
-    def update(self, model: Optional[T], _id: Optional[int] = None) -> BaseModel: ...
+    def put(self, model: Optional[T] = None) -> requests.Response:
+        body = model.model_dump() if model is not None else ''
+
+        response = requests.put(
+            url=f'{self.base_url}{self.endpoint.value.url}',
+            headers=self.request_spec,
+            json=body,
+            timeout=30
+        )
+        self.response_spec(response)
+        return response
 
     def delete(self, _id: int) -> requests.Response:
         response = requests.delete(

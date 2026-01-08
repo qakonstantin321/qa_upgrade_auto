@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Callable
+from typing import Callable, Optional
 
 from requests import Response
 
@@ -28,15 +28,22 @@ class ResponseSpecs:
         return ResponseSpecs._make_status_checker([HTTPStatus.OK, HTTPStatus.NO_CONTENT])
 
     @staticmethod
+    def entity_was_forbidden() -> Callable[[Response], None]:
+        return ResponseSpecs._make_status_checker([HTTPStatus.FORBIDDEN])
+
+    @staticmethod
     def request_returns_bad_request(
-            error_key: str,
-            error_value: str
+            error_key: Optional[str] = None,
+            error_value: Optional[str] = None
     ) -> Callable[[Response], None]:
         def check(response: Response):
             assert response.status_code == HTTPStatus.BAD_REQUEST, (
                 f"Expected 400 BAD_REQUEST, got {response.status_code}. Response: {response.text}"
             )
-            actual_value = response.json().get(error_key)
+            if error_key:
+                actual_value = response.json().get(error_key)
+            else:
+                actual_value = response.text
             assert error_value in actual_value, (
                 f"Expected error field '{error_key}' to be '{error_value}', but got '{actual_value}'."
             )

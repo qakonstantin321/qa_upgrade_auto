@@ -15,3 +15,7 @@ class RandomData:
         password = upper + lower + digits + special
         random.shuffle(password)
         return ''.join(password)
+
+    @staticmethod
+    def get_balance() -> float:
+        return round(random.uniform(1, 5000), 2)
