@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import List
+from typing import List, Type, Union
+
+from pydantic import RootModel
 
 from src.main.api.models.base_model import BaseModel
 from src.main.api.models.requests.create_user_request import CreateUserRequest
@@ -11,6 +13,8 @@ from src.main.api.models.requests.update_profile_request import UpdateProfileReq
 from src.main.api.models.responses.create_account_response import CreateAccountResponse
 from src.main.api.models.responses.create_user_response import CreateUserResponse
 from src.main.api.models.responses.deposit_money_response import DepositMoneyResponse
+from src.main.api.models.responses.get_profile_response import GetProfileResponse
+from src.main.api.models.responses.get_transactions_response import GetTransactionsResponse
 from src.main.api.models.responses.login_user_response import LoginUserResponse
 from src.main.api.models.responses.transfer_money_response import TransferMoneyResponse
 from src.main.api.models.responses.update_profile_response import UpdateProfileResponse
@@ -19,8 +23,8 @@ from src.main.api.models.responses.update_profile_response import UpdateProfileR
 @dataclass(frozen=True)
 class EndpointConfig:
     url: str
-    request_model: type[BaseModel] | type[List[BaseModel]] | None
-    response_model: type[BaseModel] | type[List[BaseModel]] | None
+    request_model: Union[Type[BaseModel], Type[RootModel], Type[List[BaseModel]], None]
+    response_model: Union[Type[BaseModel], Type[RootModel], Type[List[BaseModel]], None]
 
 
 class Endpoint(Enum):
@@ -66,10 +70,22 @@ class Endpoint(Enum):
         response_model=DepositMoneyResponse
     )
 
+    GET_TRANSACTIONS = EndpointConfig(
+        url='/accounts/{accountId}/transactions',
+        request_model=None,
+        response_model=GetTransactionsResponse
+    )
+
     TRANSFER_MONEY = EndpointConfig(
         url='/accounts/transfer',
         request_model=TransferMoneyRequest,
         response_model=TransferMoneyResponse
+    )
+
+    GET_PROFILE = EndpointConfig(
+        url='/customer/profile',
+        request_model=None,
+        response_model=GetProfileResponse
     )
 
     UPDATE_PROFILE = EndpointConfig(

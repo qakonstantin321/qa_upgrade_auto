@@ -1,3 +1,4 @@
+from enum import Enum
 from http import HTTPStatus
 from typing import Callable, Optional
 
@@ -5,7 +6,12 @@ from requests import Response
 
 
 class ResponseSpecs:
-    class Role:
+    class TransactionType(str, Enum):
+        DEPOSIT = "DEPOSIT"
+        TRANSFER_OUT = "TRANSFER_OUT"
+        TRANSFER_IN = "TRANSFER_IN"
+
+    class Role(str, Enum):
         USER = "USER"
         ADMIN = "ADMIN"
 

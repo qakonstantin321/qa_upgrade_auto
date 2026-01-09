@@ -9,6 +9,8 @@ from src.main.api.models.requests.transfer_money_request import TransferMoneyReq
 from src.main.api.models.requests.update_profile_request import UpdateProfileRequest
 from src.main.api.models.responses.create_account_response import CreateAccountResponse
 from src.main.api.models.responses.deposit_money_response import DepositMoneyResponse
+from src.main.api.models.responses.get_profile_response import GetProfileResponse
+from src.main.api.models.responses.get_transactions_response import GetTransactionsResponse
 from src.main.api.models.responses.login_user_response import LoginUserResponse
 from src.main.api.models.responses.transfer_money_response import TransferMoneyResponse
 from src.main.api.models.responses.update_profile_response import UpdateProfileResponse
@@ -66,6 +68,15 @@ class UserSteps(BaseSteps):
         return deposit_money_response
 
     @staticmethod
+    def get_transactions(user_request: CreateUserRequest,
+                         account_id: int) -> GetTransactionsResponse:
+        return ValidatedCrudRequester(
+            RequestSpecs.auth_as_user(user_request.username, user_request.password),
+            Endpoint.GET_TRANSACTIONS,
+            ResponseSpecs.request_returns_ok()
+        ).get(accountId=account_id)
+
+    @staticmethod
     def invalid_deposit_money(user_request: CreateUserRequest,
                               deposit_money_request: DepositMoneyRequest,
                               error_value: str):
@@ -109,6 +120,14 @@ class UserSteps(BaseSteps):
             Endpoint.TRANSFER_MONEY,
             ResponseSpecs.request_returns_bad_request(error_value=error_value)
         ).post(transfer_money_request)
+
+    @staticmethod
+    def get_profile(user_request: CreateUserRequest) -> GetProfileResponse:
+        return ValidatedCrudRequester(
+            RequestSpecs.auth_as_user(user_request.username, user_request.password),
+            Endpoint.GET_PROFILE,
+            ResponseSpecs.request_returns_ok()
+        ).get()
 
     @staticmethod
     def update_profile(user_request: CreateUserRequest,

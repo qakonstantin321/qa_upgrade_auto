@@ -27,9 +27,15 @@ class CrudRequester(HttpRequest, CrudEndpointInterface):
         self.response_spec(response)
         return response
 
-    def get(self, _id: Optional[int] = None) -> requests.Response:
+    def get(self, _id: Optional[int] = None, **path_params) -> requests.Response:
+        url = f'{self.base_url}{self.endpoint.value.url}'
+        if path_params:
+            url = url.format(**path_params)
+        elif _id is not None:
+            url = f'{url}/{_id}'
+
         response = requests.get(
-            url=f'{self.base_url}{self.endpoint.value.url}{("/" + str(_id)) if _id is not None else ""}',
+            url=url,
             headers=self.request_spec,
             timeout=30
         )

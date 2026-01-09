@@ -19,3 +19,7 @@ class RandomData:
     @staticmethod
     def get_balance() -> float:
         return round(random.uniform(1, 5000), 2)
+
+    @staticmethod
+    def get_profile_name() -> str:
+        return f"{faker.first_name()} {faker.last_name()}"

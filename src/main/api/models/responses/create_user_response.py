@@ -1,6 +1,7 @@
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Optional
 
 from src.main.api.models.base_model import BaseModel
+from src.main.api.specs.response_specs import ResponseSpecs
 
 
 class CreateUserResponse(BaseModel):
@@ -8,5 +9,5 @@ class CreateUserResponse(BaseModel):
     username: str
     password: str
     name: Optional[str] = None
-    role: Literal["USER", "ADMIN"]
+    role: ResponseSpecs.Role
     accounts: List[Dict[str, Any]] = []

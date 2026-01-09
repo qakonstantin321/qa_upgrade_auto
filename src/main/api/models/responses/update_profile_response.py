@@ -1,12 +1,13 @@
-from typing import List, Literal
+from typing import List
 
 from src.main.api.models.base_model import BaseModel
+from src.main.api.specs.response_specs import ResponseSpecs
 
 
 class Transaction(BaseModel):
     id: int
     amount: float
-    type: str
+    type: ResponseSpecs.TransactionType
     timestamp: str
     relatedAccountId: int
 
@@ -23,7 +24,7 @@ class Customer(BaseModel):
     username: str
     password: str
     name: str
-    role: Literal["USER", "ADMIN"]
+    role: ResponseSpecs.Role
     accounts: List[Account] = []
 
 

@@ -1,5 +1,7 @@
 from typing import List
 
+from pydantic import RootModel
+
 from src.main.api.models.base_model import BaseModel
 from src.main.api.specs.response_specs import ResponseSpecs
 
@@ -12,8 +14,7 @@ class Transaction(BaseModel):
     relatedAccountId: int
 
 
-class DepositMoneyResponse(BaseModel):
-    id: int
-    accountNumber: str
-    balance: float
-    transactions: List[Transaction]
+class GetTransactionsResponse(RootModel[List[Transaction]]):
+    @property
+    def transactions(self) -> List[Transaction]:
+        return self.root

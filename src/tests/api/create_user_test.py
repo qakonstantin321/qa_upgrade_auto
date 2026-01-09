@@ -16,18 +16,18 @@ class TestCreateUser:
     @pytest.mark.parametrize(
         argnames='username, password, role, error_key, error_value',
         argvalues=[
-            ('', RandomData.get_password(), ResponseSpecs.Role.USER, 'username',
+            ('', RandomData.get_password(), ResponseSpecs.Role.USER.value, 'username',
              ResponseSpecs.USERNAME_CANNOT_BE_BLANK),
-            ('ab', RandomData.get_password(), ResponseSpecs.Role.USER, 'username',
+            ('ab', RandomData.get_password(), ResponseSpecs.Role.USER.value, 'username',
              ResponseSpecs.USERNAME_LENGTH_INVALID),
-            ('qwertyuiopqwerty', RandomData.get_password(), ResponseSpecs.Role.USER, 'username',
+            ('qwertyuiopqwerty', RandomData.get_password(), ResponseSpecs.Role.USER.value, 'username',
              ResponseSpecs.USERNAME_LENGTH_INVALID),
-            ('@john_doe', RandomData.get_password(), ResponseSpecs.Role.USER, 'username',
+            ('@john_doe', RandomData.get_password(), ResponseSpecs.Role.USER.value, 'username',
              ResponseSpecs.USERNAME_INVALID_CHARACTERS),
         ]
     )
     def test_create_invalid_user(self, api_manager: ApiManager,
                                  username: str, password: str, role: str,
                                  error_key: str, error_value: str):
-        create_user_request = CreateUserRequest(username=username, password=password, role=role)
-        api_manager.admin_steps.create_invalid_user(create_user_request, error_key, error_value)
+        create_user_req = CreateUserRequest(username=username, password=password, role=role)
+        api_manager.admin_steps.create_invalid_user(create_user_req, error_key, error_value)
