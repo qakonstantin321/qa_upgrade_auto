@@ -1,3 +1,5 @@
+from typing import List
+
 import pytest
 
 from src.main.api.classes.api_manager import ApiManager
@@ -11,7 +13,10 @@ from src.main.api.specs.response_specs import ResponseSpecs
 class TestCreateUser:
     @pytest.mark.parametrize('create_user_request', [RandomModelGenerator.generate(CreateUserRequest)])
     def test_create_valid_user(self, api_manager: ApiManager, create_user_request: CreateUserRequest):
-        api_manager.admin_steps.create_user(create_user_request)
+        create_user_req = api_manager.admin_steps.create_user(create_user_request)
+
+        users: List[CreateUserRequest] = api_manager.admin_steps.get_all_users()
+        assert len([user for user in users if create_user_req.username == user.username]) == 1
 
     @pytest.mark.parametrize(
         argnames='username, password, role, error_key, error_value',
@@ -31,3 +36,6 @@ class TestCreateUser:
                                  error_key: str, error_value: str):
         create_user_req = CreateUserRequest(username=username, password=password, role=role)
         api_manager.admin_steps.create_invalid_user(create_user_req, error_key, error_value)
+
+        users: List[CreateUserRequest] = api_manager.admin_steps.get_all_users()
+        assert not [user for user in users if create_user_req.username == user.username]
