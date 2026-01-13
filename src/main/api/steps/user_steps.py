@@ -77,6 +77,15 @@ class UserSteps(BaseSteps):
         ).get(accountId=account_id)
 
     @staticmethod
+    def get_transactions_forbidden(user_request: CreateUserRequest,
+                                   account_id: int):
+        CrudRequester(
+            RequestSpecs.auth_as_user(user_request.username, user_request.password),
+            Endpoint.GET_TRANSACTIONS,
+            ResponseSpecs.entity_was_forbidden()
+        ).get(accountId=account_id)
+
+    @staticmethod
     def invalid_deposit_money(user_request: CreateUserRequest,
                               deposit_money_request: DepositMoneyRequest,
                               error_value: str):

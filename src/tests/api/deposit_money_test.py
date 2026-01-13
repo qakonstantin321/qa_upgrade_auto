@@ -50,10 +50,12 @@ class TestDepositMoney:
                                                                                                  create_account.id)
         assert not get_transactions_resp.transactions
 
-    def test_deposit_money_non_exist_account(self, user_request: CreateUserRequest,
-                                             api_manager: ApiManager):
-        deposit_money_req = DepositMoneyRequest(id=41214341, balance=RandomData.get_balance())
+    def test_deposit_money_non_existing_account(self, user_request: CreateUserRequest,
+                                                api_manager: ApiManager):
+        non_existing_account_id: int = 41214341
+        deposit_money_req = DepositMoneyRequest(id=non_existing_account_id, balance=RandomData.get_balance())
         api_manager.user_steps.deposit_money_invalid_account(user_request, deposit_money_req)
+        api_manager.user_steps.get_transactions_forbidden(user_request, non_existing_account_id)
 
     def test_deposit_money_another_user_account(self,
                                                 user_request: CreateUserRequest,
