@@ -81,6 +81,6 @@ class TestTransferMoney:
                                                       transfer_req,
                                                       error_value)
 
-        get_transactions_resp: GetTransactionsResponse = api_manager.user_steps.get_transactions(user_request,
-                                                                                                 deposit_account_20000_rubbles.id)
-        assert len(get_transactions_resp.transactions) == 4
+        resp: GetTransactionsResponse = api_manager.user_steps.get_transactions(user_request,
+                                                                                deposit_account_20000_rubbles.id)
+        assert len(resp.transactions) == 4

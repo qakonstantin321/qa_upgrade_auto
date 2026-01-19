@@ -2,16 +2,7 @@ from typing import List
 
 from pydantic import RootModel
 
-from src.main.api.models.base_model import BaseModel
-from src.main.api.specs.response_specs import ResponseSpecs
-
-
-class Transaction(BaseModel):
-    id: int
-    amount: float
-    type: ResponseSpecs.TransactionType
-    timestamp: str
-    relatedAccountId: int
+from src.main.api.models.responses.common_models import Transaction
 
 
 class GetTransactionsResponse(RootModel[List[Transaction]]):

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from src.main.api.models.comparison.model_assertions import ModelAssertions
 from src.main.api.models.requests.create_user_request import CreateUserRequest
@@ -20,7 +20,7 @@ class AdminSteps(BaseSteps):
         ).post(user_request)
         ModelAssertions(user_request, create_user_response).match()
 
-        self.created_objects.append(create_user_response)
+        self.cleanup_objects.append(create_user_response)
 
         return user_request
 
@@ -41,10 +41,16 @@ class AdminSteps(BaseSteps):
         ).delete(user_id)
 
     @staticmethod
-    def get_all_users() -> List[CreateUserRequest]:
+    def get_all_users() -> List[CreateUserResponse]:
         response = ValidatedCrudRequester(
             RequestSpecs.admin_auth_spec(),
             Endpoint.ADMIN_GET_ALL_USERS,
             ResponseSpecs.request_returns_ok()
         ).get()
         return response
+
+    @staticmethod
+    def get_user_by_username(user_request: CreateUserRequest) -> Optional[CreateUserResponse]:
+        found_user: CreateUserResponse = next(
+            (u for u in AdminSteps.get_all_users() if u.username == user_request.username), None)
+        return found_user
