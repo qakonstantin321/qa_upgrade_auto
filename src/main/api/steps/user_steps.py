@@ -1,4 +1,5 @@
-from typing import Optional
+import time
+from typing import Callable, List, Optional, TypeVar
 
 from src.main.api.generators.random_model_generator import RandomModelGenerator
 from src.main.api.models.comparison.model_assertions import ModelAssertions
@@ -20,6 +21,8 @@ from src.main.api.requests.skeleton.requesters.validated_crud_requester import V
 from src.main.api.specs.request_specs import RequestSpecs
 from src.main.api.specs.response_specs import ResponseSpecs
 from src.main.api.steps.base_steps import BaseSteps
+
+T = TypeVar('T')
 
 
 class UserSteps(BaseSteps):
@@ -75,6 +78,23 @@ class UserSteps(BaseSteps):
             Endpoint.GET_TRANSACTIONS,
             ResponseSpecs.request_returns_ok()
         ).get(accountId=account_id)
+
+    @staticmethod
+    def wait_for_condition(
+            func: Callable[[], T],
+            condition: Callable[[T], bool],
+            timeout: int = 5,
+            interval: float = 0.2
+    ) -> T:
+        deadline = time.time() + timeout
+        last_result: T | None = None
+        while time.time() < deadline:
+            result = func()
+            last_result = result
+            if condition(result):
+                return result
+            time.sleep(interval)
+        return last_result
 
     @staticmethod
     def get_transactions_forbidden(user_request: CreateUserRequest,
@@ -137,6 +157,16 @@ class UserSteps(BaseSteps):
             Endpoint.GET_PROFILE,
             ResponseSpecs.request_returns_ok()
         ).get()
+
+    @staticmethod
+    def get_all_accounts(user_request: CreateUserRequest) -> List[CreateAccountResponse]:
+        user_accounts: List[CreateAccountResponse] = ValidatedCrudRequester(
+            RequestSpecs.auth_as_user(user_request.username, user_request.password),
+            Endpoint.GET_CUSTOMER_ACCOUNTS,
+            ResponseSpecs.request_returns_ok()
+        ).get()
+
+        return user_accounts
 
     @staticmethod
     def update_profile(user_request: CreateUserRequest,
