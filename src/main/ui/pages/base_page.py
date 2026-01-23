@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Callable, List, Optional, Type, TypeVar
 
-from playwright.sync_api import Locator, Page
-from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
+from playwright.sync_api import Dialog, Locator, Page
 
 from src.main.api.configs.config import Config
 from src.main.api.models.requests.create_user_request import CreateUserRequest
@@ -43,25 +42,12 @@ class BasePage(ABC):
     def get_page(self, page_cls: Type[T]) -> T:
         return page_cls(self.page)
 
-    def check_alert_message_and_accept(self: T, expected_text: str, timeout: Optional[int] = None) -> T:
-        timeout = timeout or DEFAULT_DIALOG_TIMEOUT
+    def check_alert_message_and_accept(self: T, expected_text: str) -> T:
+        def _handler(d: Dialog) -> None:
+            assert expected_text in d.message, f"Alert text mismatch: {d.message}"
+            d.accept()
 
-        try:
-            dialog = self.page.wait_for_event("dialog", timeout=timeout)
-        except PlaywrightTimeoutError:
-            raise TimeoutError(
-                f"Диалоговое окно не появилось в течение {timeout}ms. "
-                f"Ожидаемый текст: '{expected_text}'"
-            ) from None
-
-        if expected_text not in dialog.message:
-            raise AssertionError(
-                f"Текст диалога не соответствует ожидаемому.\n"
-                f"Ожидаемый текст: '{expected_text}'\n"
-                f"Фактический текст: '{dialog.message}'"
-            )
-        dialog.accept()
-
+        self.page.once("dialog", _handler)
         return self
 
     def auth_as_user(self: T, user_request: CreateUserRequest) -> None:
@@ -70,6 +56,10 @@ class BasePage(ABC):
         self.page.goto(self.base_url, timeout=DEFAULT_PAGE_LOAD_TIMEOUT)
         self.page.evaluate('token => localStorage.setItem("authToken", token)', auth_token)
 
-    def _generate_page_elements(self, elements: Locator, constructor: Callable[[Locator], T]) -> List[T]:
+    @staticmethod
+    def _generate_page_elements(elements: Locator, constructor: Callable[[Locator], T]) -> Optional[List[T]]:
+        count = elements.count()
+        if count == 0:
+            return []
         elements.first.wait_for(state="attached", timeout=DEFAULT_ELEMENT_TIMEOUT)
         return [constructor(elements.nth(i)) for i in range(elements.count())]

@@ -7,7 +7,6 @@ from src.main.api.models.requests.create_user_request import CreateUserRequest
 from src.main.api.models.responses.get_profile_response import GetProfileResponse
 from src.main.ui.pages.bank_alert import BankAlert
 from src.main.ui.pages.edit_profile_page import EditProfilePage
-from src.main.ui.pages.user_dashboard import UserDashboard
 
 
 @pytest.mark.ui
@@ -16,9 +15,7 @@ class TestUpdateProfile:
     def test_update_profile(self, api_manager: ApiManager, page: Page, user_request: CreateUserRequest):
         name: str = RandomData.get_profile_name()
 
-        dashboard_page = UserDashboard(page).open()
-        dashboard_page.edit_profile()
-        edit_profile_page = dashboard_page.get_page(EditProfilePage)
+        edit_profile_page = EditProfilePage(page).open()
         expect(edit_profile_page.edit_profile_panel_text).to_be_visible()
         edit_profile_page.edit_profile_name(name)
         edit_profile_page.check_alert_message_and_accept(BankAlert.NAME_UPDATED)
