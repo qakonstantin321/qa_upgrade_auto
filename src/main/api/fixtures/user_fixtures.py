@@ -37,6 +37,11 @@ def admin_user_request() -> CreateUserRequest:
 
 
 @pytest.fixture
+def new_user_request() -> CreateUserRequest:
+    return RandomModelGenerator.generate(CreateUserRequest)
+
+
+@pytest.fixture
 def create_account(api_manager: ApiManager, user_request: CreateUserRequest) -> CreateAccountResponse:
     """Создание аккаунта"""
     return api_manager.user_steps.create_user_account(user_request=user_request)

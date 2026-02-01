@@ -7,7 +7,13 @@ from src.main.api.utils.normalize_browsers import norm_browser_name
 from src.main.ui.pages.login_page import LoginPage
 
 
-@pytest.fixture(autouse=True, scope="function")
+@pytest.fixture(autouse=True)
+def clear_session_storage_for_api(request):
+    if request.node.get_closest_marker("api"):
+        SessionStorage.clear()
+
+
+@pytest.fixture(autouse=True)
 def user_session_extension(request, user_factory):
     SessionStorage.clear()
 
