@@ -50,10 +50,6 @@ class TestDepositMoney:
         ]
     )
     @pytest.mark.user_session
-    @pytest.mark.xfail(
-        reason="Dialog window doesn't appear for invalid amounts",
-        strict=True
-    )
     def test_invalid_deposit_money(self, page: Page, user_request: CreateUserRequest,
                                    create_account: CreateAccountResponse,
                                    api_manager: ApiManager,
@@ -62,7 +58,7 @@ class TestDepositMoney:
 
         deposit_page = DepositMoneyPage(page).open()
         deposit_page.deposit(deposit_money_request)
-        deposit_page.check_alert_message_and_accept(error_value, 1000)
+        deposit_page.check_alert_message_and_accept(error_value)
 
         resp: GetTransactionsResponse = api_manager.user_steps.wait_for_condition(
             func=lambda: api_manager.user_steps.get_transactions(user_request, create_account.id),

@@ -35,8 +35,6 @@ class TestCreateUser:
         new_user_request: CreateUserRequest = CreateUserRequest(username=RandomData.get_username(2),
                                                                 password=RandomData.get_password(),
                                                                 role=ResponseSpecs.Role.USER)
-        api_manager.admin_steps.cleanup_objects.append(new_user_request)
-
         admin_page = AdminPanel(page).open()
         expect(admin_page.admin_panel_text).to_be_visible()
 

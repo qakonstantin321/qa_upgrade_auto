@@ -25,7 +25,7 @@ class AdminPanel(BasePage):
         return self
 
     def get_all_users_locator(self) -> Locator:
-        return self.page.locator(".card.shadow-custom:has(:has-text('All Users')) li")
+        return self.page.locator(".card.shadow-custom:has(:has-text('All Users'))")
 
     def get_all_users(self) -> List[UserBadge]:
         return self._generate_page_elements(self.get_all_users_locator(), UserBadge)
