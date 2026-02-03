@@ -10,6 +10,7 @@ from src.main.ui.pages.edit_profile_page import EditProfilePage
 
 
 @pytest.mark.ui
+@pytest.mark.usefixtures("user_session_extension", "browser_match_guard")
 class TestUpdateProfile:
     @pytest.mark.user_session
     def test_update_profile(self, api_manager: ApiManager, page: Page, user_request: CreateUserRequest):

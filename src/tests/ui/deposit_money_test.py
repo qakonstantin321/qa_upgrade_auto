@@ -15,6 +15,7 @@ from src.main.ui.pages.user_dashboard import UserDashboard
 
 
 @pytest.mark.ui
+@pytest.mark.usefixtures("user_session_extension", "browser_match_guard")
 class TestDepositMoney:
     @pytest.mark.user_session
     @pytest.mark.parametrize('deposit_money_request', [RandomModelGenerator.generate(DepositMoneyRequest)])

@@ -15,6 +15,7 @@ from src.main.ui.pages.user_dashboard import UserDashboard
 
 
 @pytest.mark.ui
+@pytest.mark.usefixtures("user_session_extension", "browser_match_guard")
 class TestTransferMoney:
     @pytest.mark.user_session
     def test_transfer_money_same_user(self, api_manager: ApiManager, page: Page,

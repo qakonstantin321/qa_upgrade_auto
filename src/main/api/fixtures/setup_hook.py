@@ -7,13 +7,7 @@ from src.main.api.utils.normalize_browsers import norm_browser_name
 from src.main.ui.pages.login_page import LoginPage
 
 
-@pytest.fixture(autouse=True)
-def clear_session_storage_for_api(request):
-    if request.node.get_closest_marker("api"):
-        SessionStorage.clear()
-
-
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def user_session_extension(request, user_factory):
     SessionStorage.clear()
 
@@ -25,24 +19,22 @@ def user_session_extension(request, user_factory):
     auth_index: int = int(mark.kwargs.get("auth", 0))
 
     users: list[CreateUserRequest] = [user_factory() for _ in range(count)]
-    if request.node.get_closest_marker("ui"):
-        page: Page = request.getfixturevalue("page")
-        LoginPage(page).auth_as_user(users[auth_index])
+    page: Page = request.getfixturevalue("page")
+    LoginPage(page).auth_as_user(users[auth_index])
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def admin_session_autologin(
         request: pytest.FixtureRequest,
         admin_user_request: CreateUserRequest
 ):
     if not request.node.get_closest_marker("admin_session"):
         return
-    if request.node.get_closest_marker("ui"):
-        page: Page = request.getfixturevalue("page")
-        LoginPage(page).auth_as_user(admin_user_request)
+    page: Page = request.getfixturevalue("page")
+    LoginPage(page).auth_as_user(admin_user_request)
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def browser_match_guard(request):
     if request.node.get_closest_marker("api"):
         return

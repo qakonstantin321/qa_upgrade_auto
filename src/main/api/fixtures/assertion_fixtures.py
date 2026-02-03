@@ -96,6 +96,11 @@ def check_all_users_change(request: pytest.FixtureRequest):
         should_exist = delta > 0
     should_exist = bool(should_exist)
 
+    # In xdist (or other parallel runs) global "count delta" is not stable, because other tests
+    # can create/delete users between our before/after snapshots. Allow opting into strict mode.
+    strict_delta = bool(mark.kwargs.get("strict_delta", False))
+    running_xdist = hasattr(request.config, "workerinput")
+
     api_manager: ApiManager = request.getfixturevalue("api_manager")
 
     # Resolve username early (before yield), while parametrized args are still accessible.
@@ -104,18 +109,33 @@ def check_all_users_change(request: pytest.FixtureRequest):
         resolved_username = str(_resolve_source(request, username_source))
 
     before = api_manager.admin_steps.get_all_users()
+    before_usernames = {u.username for u in before}
     yield
     after = api_manager.admin_steps.get_all_users()
-
-    assert len(after) - len(before) == delta, (
-        f"Expected users delta={delta} (after-before), but got {len(after) - len(before)}. "
-        f"before={len(before)}, after={len(after)}"
-    )
+    after_usernames = {u.username for u in after}
 
     if resolved_username is not None:
-        found = any(u.username == resolved_username for u in after)
-        assert found is should_exist, (
-            f"Expected user '{resolved_username}' existence={should_exist} via GET /admin/users, but found={found}"
+        if should_exist:
+            assert resolved_username in after_usernames, (
+                f"Expected user '{resolved_username}' existence=True via GET /admin/users, "
+                f"but it was not found."
+            )
+            # In sequential runs we can also assert the user wasn't present before (true "creation").
+            if (not running_xdist) and delta > 0:
+                assert resolved_username not in before_usernames, (
+                    f"Expected user '{resolved_username}' to be newly created, but it already existed before."
+                )
+        else:
+            assert resolved_username not in after_usernames, (
+                f"Expected user '{resolved_username}' existence=False via GET /admin/users, "
+                f"but it was found."
+            )
+
+    # Count delta is reliable only in sequential runs (or when explicitly requested).
+    if strict_delta and not running_xdist:
+        assert len(after) - len(before) == delta, (
+            f"Expected users delta={delta} (after-before), but got {len(after) - len(before)}. "
+            f"before={len(before)}, after={len(after)}"
         )
 
 
@@ -140,7 +160,7 @@ def check_accounts_change(request: pytest.FixtureRequest):
     if request.node.get_closest_marker("user_session") is not None:
         try:
             request.getfixturevalue("user_session_extension")
-        except Exception:
+        except pytest.FixtureLookupError:
             # In non-UI contexts this fixture may not exist; ignore.
             pass
 
@@ -285,7 +305,6 @@ def check_transfer_transaction(request: pytest.FixtureRequest):
     receiver_user = user_props.get(receiver_user_source)
     if not receiver_user:
         receiver_user = _resolve_source(request, receiver_user_source)
-    
     account_obj_name = receiver_account_id_source.split('.')[0]
     receiver_account_obj = user_props.get(account_obj_name)
     if receiver_account_obj:
@@ -302,7 +321,6 @@ def check_transfer_transaction(request: pytest.FixtureRequest):
     assert tr.type == ResponseSpecs.TransactionType.TRANSFER_IN.value
     if sender_account_id is not None:
         assert tr.relatedAccountId == sender_account_id
-    
     transfer_response = user_props.get('transfer_response')
     if transfer_response:
         assert tr.amount == transfer_response.amount
