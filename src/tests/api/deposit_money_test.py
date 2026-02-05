@@ -10,6 +10,8 @@ from src.main.api.models.requests.deposit_money_request import DepositMoneyReque
 from src.main.api.models.responses.create_account_response import CreateAccountResponse
 from src.main.api.specs.response_specs import ResponseSpecs
 
+DEPOSIT_MONEY_KEY = "deposit_money_response"
+
 
 @pytest.mark.api
 class TestDepositMoney:
@@ -22,7 +24,7 @@ class TestDepositMoney:
                                  deposit_money_request: DepositMoneyRequest,
                                  request: pytest.FixtureRequest):
         deposit_money_resp = api_manager.user_steps.deposit_money(user_request, create_account, deposit_money_request)
-        request.node.user_properties['deposit_money_response'] = deposit_money_resp
+        request.node.user_properties[DEPOSIT_MONEY_KEY] = deposit_money_resp
 
     @pytest.mark.check_transactions_count(account_id_source="create_account.id", expected_after=0)
     @pytest.mark.parametrize(
