@@ -41,7 +41,7 @@ def init_user_properties(request: pytest.FixtureRequest):
         request.node.user_properties = {}
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def entity_will_be_created(request: pytest.FixtureRequest):
     """
     Marker-driven helper for cleanup: adds entity/entities to `created_objects`.
@@ -75,7 +75,7 @@ def entity_will_be_created(request: pytest.FixtureRequest):
     yield
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def check_all_users_change(request: pytest.FixtureRequest):
     """
     Marker-driven post-action verification for API tests.
@@ -119,7 +119,7 @@ def check_all_users_change(request: pytest.FixtureRequest):
         )
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def check_accounts_change(request: pytest.FixtureRequest):
     """
     Marker-driven post-action verification for accounts (customer accounts list).
@@ -159,7 +159,7 @@ def check_accounts_change(request: pytest.FixtureRequest):
     )
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def check_transactions_count(request: pytest.FixtureRequest):
     """
     Marker-driven verification for transactions count.
@@ -203,7 +203,7 @@ def check_transactions_count(request: pytest.FixtureRequest):
         )
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def check_deposit_transaction_match(request: pytest.FixtureRequest):
     """
     Marker-driven verification that deposit transaction matches get_transactions response.
@@ -246,7 +246,7 @@ def check_deposit_transaction_match(request: pytest.FixtureRequest):
         )
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def check_transfer_transaction(request: pytest.FixtureRequest):
     """
     Marker-driven verification for transfer transaction.
@@ -285,7 +285,6 @@ def check_transfer_transaction(request: pytest.FixtureRequest):
     receiver_user = user_props.get(receiver_user_source)
     if not receiver_user:
         receiver_user = _resolve_source(request, receiver_user_source)
-    
     account_obj_name = receiver_account_id_source.split('.')[0]
     receiver_account_obj = user_props.get(account_obj_name)
     if receiver_account_obj:
@@ -302,14 +301,13 @@ def check_transfer_transaction(request: pytest.FixtureRequest):
     assert tr.type == ResponseSpecs.TransactionType.TRANSFER_IN.value
     if sender_account_id is not None:
         assert tr.relatedAccountId == sender_account_id
-    
     transfer_response = user_props.get('transfer_response')
     if transfer_response:
         assert tr.amount == transfer_response.amount
         assert tr.relatedAccountId == transfer_response.senderAccountId
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def check_profile_name(request: pytest.FixtureRequest):
     """
     Marker-driven verification for profile name.
