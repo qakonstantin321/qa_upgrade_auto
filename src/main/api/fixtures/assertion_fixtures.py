@@ -41,7 +41,7 @@ def init_user_properties(request: pytest.FixtureRequest):
         request.node.user_properties = {}
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def entity_will_be_created(request: pytest.FixtureRequest):
     """
     Marker-driven helper for cleanup: adds entity/entities to `created_objects`.
@@ -75,7 +75,7 @@ def entity_will_be_created(request: pytest.FixtureRequest):
     yield
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def check_all_users_change(request: pytest.FixtureRequest):
     """
     Marker-driven post-action verification for API tests.
@@ -139,7 +139,7 @@ def check_all_users_change(request: pytest.FixtureRequest):
         )
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def check_accounts_change(request: pytest.FixtureRequest):
     """
     Marker-driven post-action verification for accounts (customer accounts list).
@@ -179,7 +179,7 @@ def check_accounts_change(request: pytest.FixtureRequest):
     )
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def check_transactions_count(request: pytest.FixtureRequest):
     """
     Marker-driven verification for transactions count.
@@ -223,7 +223,7 @@ def check_transactions_count(request: pytest.FixtureRequest):
         )
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def check_deposit_transaction_match(request: pytest.FixtureRequest):
     """
     Marker-driven verification that deposit transaction matches get_transactions response.
@@ -266,7 +266,7 @@ def check_deposit_transaction_match(request: pytest.FixtureRequest):
         )
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def check_transfer_transaction(request: pytest.FixtureRequest):
     """
     Marker-driven verification for transfer transaction.
@@ -327,7 +327,7 @@ def check_transfer_transaction(request: pytest.FixtureRequest):
         assert tr.relatedAccountId == transfer_response.senderAccountId
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def check_profile_name(request: pytest.FixtureRequest):
     """
     Marker-driven verification for profile name.
