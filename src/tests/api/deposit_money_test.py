@@ -10,7 +10,6 @@ from src.main.api.models.requests.deposit_money_request import DepositMoneyReque
 from src.main.api.models.responses.create_account_response import CreateAccountResponse
 from src.main.api.specs.response_specs import ResponseSpecs
 
-
 DEPOSIT_MONEY_RESPONSE_KEY = "deposit_money_response"
 
 

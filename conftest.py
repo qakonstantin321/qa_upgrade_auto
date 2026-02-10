@@ -125,4 +125,5 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
 
 @pytest.fixture(autouse=True)
 def clear_storage():
+    yield
     SessionStorage.clear()
