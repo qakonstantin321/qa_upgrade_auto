@@ -21,11 +21,11 @@ class ResponseSpecs:
     USERNAME_INVALID_CHARACTERS = "Username must contain only letters, digits, dashes, underscores, and dots"
 
     # Deposit validation
-    DEPOSIT_MIN_AMOUNT = "Deposit amount must be at least 0.01"
-    DEPOSIT_MAX_AMOUNT = "Deposit amount cannot exceed 5000"
+    DEPOSIT_MIN_AMOUNT = "Invalid account or amount"
+    DEPOSIT_MAX_AMOUNT = "Deposit amount exceeds the 5000 limit"
 
     # Transfer validation
-    TRANSFER_MIN_AMOUNT = "Transfer amount must be at least 0.01"
+    TRANSFER_MIN_AMOUNT = "Invalid transfer: insufficient funds or invalid accounts"
     TRANSFER_MAX_AMOUNT = "Transfer amount cannot exceed 10000"
 
     # Profile validation

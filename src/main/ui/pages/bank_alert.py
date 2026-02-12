@@ -10,13 +10,14 @@ class BankAlert(str, Enum):
     NEW_ACCOUNT_CREATED = "✅ New Account Created! Account Number: "
 
     # Deposit account
-    ACCOUNT_DEPOSITED = "✅ Successfully deposited ${amount} to account ACC{account_id}!"
+    ACCOUNT_DEPOSITED = "✅ Successfully deposited ${amount} to account {account}!"
     INVALID_AMOUNT = "❌ Please enter a valid amount."
     INVALID_AMOUNT_MORE_5000 = "❌ Please deposit less or equal to 5000$."
 
     # Transfer account
-    MONEY_TRANSFERED = "✅ Successfully transferred ${amount} to account ACC{account_id}!"
-    NEGATIVE_TRANSFER = "❌ Error: Transfer amount must be at least 0.01"
+    MONEY_TRANSFERED = "✅ Successfully transferred ${amount} to account {account}!"
+
+    NEGATIVE_TRANSFER = "❌ Error: Invalid transfer: insufficient funds or invalid accounts"
     EXCEED_10000_TRANSFER = "❌ Error: Transfer amount cannot exceed 10000"
 
     # Update profile

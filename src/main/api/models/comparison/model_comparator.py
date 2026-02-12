@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from decimal import Decimal, InvalidOperation
 from typing import Any, Dict, List
 
 
@@ -24,14 +25,23 @@ class ComparisonResult:
 class ModelComparator:
     @staticmethod
     def compare_fields(request: Any, response: Any, field_mapping: Dict[str, str]) -> ComparisonResult:
-        mismatches = []
+        mismatches: List[Mismatch] = []
 
         for request_field, response_field in field_mapping.items():
             request_value = ModelComparator._get_field_value(request, request_field)
             response_value = ModelComparator._get_field_value(response, response_field)
 
-            if str(request_value) != str(response_value):
-                mismatches.append(Mismatch(f'{request_field} -> {response_field}', request_value, response_value))
+            if str(request_value) == str(response_value):
+                continue
+            try:
+                left_dec = Decimal(str(request_value))
+                right_dec = Decimal(str(response_value))
+                if left_dec == right_dec:
+                    continue
+            except (InvalidOperation, ValueError, TypeError):
+                pass
+
+            mismatches.append(Mismatch(f'{request_field} -> {response_field}', request_value, response_value))
 
         return ComparisonResult(mismatches)
 
