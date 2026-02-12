@@ -24,7 +24,7 @@ def cleanup_objects(objects: List[Any]):
         elif isinstance(obj, CreateUserRequest):
             try:
                 user_profile = api_manager.user_steps.get_profile(obj)
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-exception-caught
                 username = getattr(obj, "username", obj)
                 logging.warning("Skip cleanup for user '%s': %s", username, e)
                 continue
