@@ -8,7 +8,7 @@ from src.main.ui.pages.login_page import LoginPage
 
 
 @pytest.fixture
-def user_session_extension(request, user_factory):
+def user_session_extension(request: pytest.FixtureRequest, user_factory):
     SessionStorage.clear()
 
     mark = request.node.get_closest_marker("user_session")
@@ -35,7 +35,7 @@ def admin_session_autologin(
 
 
 @pytest.fixture
-def browser_match_guard(request):
+def browser_match_guard(request: pytest.FixtureRequest):
     if request.node.get_closest_marker("api"):
         return
 
@@ -48,9 +48,10 @@ def browser_match_guard(request):
         return
 
     try:
-        current = request.getfixturevalue("browser_name")
+        request.getfixturevalue("browser_name")
     except pytest.FixtureLookupError:
         return
 
-    if norm_browser_name(str(current)) not in allowed:
-        pytest.skip(f"Пропущен: текущий браузер '{current}' не в {sorted(allowed)}")
+    # No runtime skip here: we filter browsers at collection-time in root conftest.py,
+    # so we don't pollute reports with SKIPPED.
+    return

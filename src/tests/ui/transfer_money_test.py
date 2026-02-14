@@ -30,10 +30,10 @@ class TestTransferMoney:
         dashboard_page.make_transfer()
         transfer_page = dashboard_page.get_page(TransferMoneyPage)
         expect(transfer_page.transfer_money_panel_text).to_be_visible()
-        transfer_page.transfer(transfer_req, name=user_request.username)
+        transfer_page.transfer(transfer_req, name=user_request.username, account_number=user_account_2.accountNumber)
         transfer_page.check_alert_message_and_accept(
             BankAlert.MONEY_TRANSFERED.value.format(amount=transfer_req.amount,
-                                                    account_id=transfer_req.receiverAccountId))
+                                                    account=user_account_2.accountNumber))
 
         transfer_resp: GetTransactionsResponse = api_manager.user_steps.wait_for_condition(
             func=lambda: api_manager.user_steps.get_transactions(user_request, user_account_2.id),
@@ -64,7 +64,8 @@ class TestTransferMoney:
                                             amount=amount)
 
         transfer_page = TransferMoneyPage(page).open()
-        transfer_page.transfer(transfer_req, name=user_request.username)
+        transfer_page.transfer(transfer_req, name=user_request.username,
+                               account_number=deposit_account_20000_rubbles.accountNumber)
         transfer_page.check_alert_message_and_accept(error_value)
 
         transfer_resp: GetTransactionsResponse = api_manager.user_steps.wait_for_condition(

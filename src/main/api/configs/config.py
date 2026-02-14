@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from typing import Any, Dict
 
@@ -25,4 +26,8 @@ class Config:
 
     @staticmethod
     def get(key: str, default_value: Any = None) -> Any:
+        # Allow overriding config.properties via environment variables (useful for CI / Docker / different backends).
+        env_val = os.getenv(key) or os.getenv(key.upper())
+        if env_val is not None:
+            return env_val
         return Config().properties.get(key, default_value)

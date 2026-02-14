@@ -6,4 +6,5 @@ rstr
 pytest-playwright
 faker
 pytest-xdist
-pytest-html
+psycopg[binary]
+pytest-dotenv

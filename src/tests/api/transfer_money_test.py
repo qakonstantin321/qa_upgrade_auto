@@ -3,6 +3,7 @@ from typing import Union
 import pytest
 
 from src.main.api.classes.api_manager import ApiManager
+from src.main.api.models.comparison.dao_and_model_assertions import DaoAndModelAssertions
 from src.main.api.models.requests.create_user_request import CreateUserRequest
 from src.main.api.models.requests.transfer_money_request import TransferMoneyRequest
 from src.main.api.models.responses.deposit_money_response import DepositMoneyResponse
@@ -14,6 +15,7 @@ TRANSFER_RESPONSE_KEY = "transfer_response"
 
 
 @pytest.mark.api
+@pytest.mark.api_version("with_database")
 class TestTransferMoney:
     @pytest.mark.check_all_users_change(delta=2, username_source="new_user_request.username", should_exist=True)
     @pytest.mark.check_transfer_transaction(
@@ -37,6 +39,9 @@ class TestTransferMoney:
         transfer_resp = api_manager.user_steps.transfer_money(user_request, transfer_req)
         request.node.user_properties[TRANSFER_RESPONSE_KEY] = transfer_resp
 
+        transfer_dao = api_manager.database_steps.get_transaction_by_account_id(account_id=deposit_account.id, index=-1)
+        DaoAndModelAssertions.assert_that(transfer_resp, transfer_dao).match()
+
     @pytest.mark.check_accounts_change(delta=2)
     @pytest.mark.check_transfer_transaction(
         receiver_user_source="user_request",
@@ -55,6 +60,9 @@ class TestTransferMoney:
                                             amount=deposit_account.balance)
         transfer_resp = api_manager.user_steps.transfer_money(user_request, transfer_req)
         request.node.user_properties[TRANSFER_RESPONSE_KEY] = transfer_resp
+
+        transfer_dao = api_manager.database_steps.get_transaction_by_account_id(account_id=deposit_account.id, index=-1)
+        DaoAndModelAssertions.assert_that(transfer_resp, transfer_dao).match()
 
     @pytest.mark.check_transactions_count(account_id_source="deposit_account_20000_rubbles.id", expected_after=4)
     @pytest.mark.parametrize(
@@ -75,3 +83,9 @@ class TestTransferMoney:
                                             receiverAccountId=receiver_account.id,
                                             amount=amount)
         api_manager.user_steps.invalid_transfer_money(user_request, transfer_req, error_value)
+
+        transfer_dao = api_manager.database_steps.find_transaction_by_account_id(receiver_account.id)
+        assert transfer_dao is None, (
+            f"Transaction for account '{create_account.id}' should NOT exist in DB after invalid transfer, "
+            f"but was found: {transfer_dao}"
+        )

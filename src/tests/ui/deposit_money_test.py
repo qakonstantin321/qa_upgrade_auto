@@ -32,7 +32,7 @@ class TestDepositMoney:
         deposit_page.deposit(deposit_money_request)
         deposit_page.check_alert_message_and_accept(
             BankAlert.ACCOUNT_DEPOSITED.value.format(amount=deposit_money_request.balance,
-                                                     account_id=deposit_money_request.id))
+                                                     account=user_account.accountNumber))
 
         resp: GetTransactionsResponse = api_manager.user_steps.wait_for_condition(
             func=lambda: api_manager.user_steps.get_transactions(user_request, user_account.id),
