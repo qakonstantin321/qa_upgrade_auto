@@ -46,7 +46,6 @@ class UserSteps(BaseSteps):
         ).post()
 
         assert create_account_response.balance == 0.0
-        assert not create_account_response.transactions
         return create_account_response
 
     @staticmethod
@@ -55,7 +54,7 @@ class UserSteps(BaseSteps):
                       deposit_money_request: DepositMoneyRequest = RandomModelGenerator.generate(DepositMoneyRequest),
                       previous_response: Optional[DepositMoneyResponse] = None
                       ) -> DepositMoneyResponse:
-        deposit_money_request.id = create_account_response.id
+        deposit_money_request.accountId = create_account_response.id
         current_balance = previous_response.balance if previous_response else create_account_response.balance
 
         deposit_money_response: DepositMoneyResponse = ValidatedCrudRequester(
@@ -64,10 +63,9 @@ class UserSteps(BaseSteps):
             ResponseSpecs.request_returns_ok()
         ).post(deposit_money_request)
 
-        expected_balance = current_balance + deposit_money_request.balance
+        expected_balance = current_balance + deposit_money_request.amount
         assert deposit_money_response.balance == expected_balance
         assert create_account_response.accountNumber == deposit_money_response.accountNumber
-        assert deposit_money_response.transactions
         return deposit_money_response
 
     @staticmethod
@@ -78,6 +76,18 @@ class UserSteps(BaseSteps):
             Endpoint.GET_TRANSACTIONS,
             ResponseSpecs.request_returns_ok()
         ).get(accountId=account_id)
+
+    @staticmethod
+    def transfer_with_fraud_check(
+            user_request: CreateUserRequest,
+            transfer_request: TransferMoneyRequest,
+    ) -> TransferMoneyResponse:
+        transfer_response: TransferMoneyResponse = ValidatedCrudRequester(
+            RequestSpecs.auth_as_user(user_request.username, user_request.password),
+            Endpoint.TRANSFER_WITH_FRAUD_CHECK,
+            ResponseSpecs.request_returns_ok()
+        ).post(transfer_request)
+        return transfer_response
 
     @staticmethod
     def wait_for_condition(

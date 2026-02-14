@@ -254,13 +254,12 @@ def check_deposit_transaction_match(request: pytest.FixtureRequest):
     # Get deposit_money_response from node user_properties (guaranteed to exist by init_user_properties)
     user_props = request.node.user_properties
     deposit_response = user_props.get('deposit_money_response')
-    if deposit_response and len(deposit_response.transactions) > 0:
+    if deposit_response and deposit_response.transactions and len(deposit_response.transactions) > 0:
         assert len(get_transactions_resp.transactions) == 1, (
             f"Expected 1 transaction, but got {len(get_transactions_resp.transactions)}"
         )
         ModelAssertions(deposit_response.transactions[0], get_transactions_resp.transactions[0]).match()
     else:
-        # just check that there's 1 transaction
         assert len(get_transactions_resp.transactions) == 1, (
             f"Expected 1 transaction, but got {len(get_transactions_resp.transactions)}"
         )

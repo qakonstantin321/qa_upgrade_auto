@@ -27,3 +27,10 @@ class RandomData:
     @staticmethod
     def get_profile_name() -> str:
         return f"{faker.first_name()} {faker.last_name()}"
+
+    @staticmethod
+    def get_float(min_value: float, max_value: float) -> float:
+        """
+        Random float in [min_value, max_value].
+        """
+        return float(random.uniform(min_value, max_value))

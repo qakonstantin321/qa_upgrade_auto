@@ -86,6 +86,6 @@ class TestTransferMoney:
 
         transfer_dao = api_manager.database_steps.find_transaction_by_account_id(receiver_account.id)
         assert transfer_dao is None, (
-            f"Transaction for account '{create_account.id}' should NOT exist in DB after invalid transfer, "
+            f"Transaction for account '{receiver_account.id}' should NOT exist in DB after invalid transfer, "
             f"but was found: {transfer_dao}"
         )

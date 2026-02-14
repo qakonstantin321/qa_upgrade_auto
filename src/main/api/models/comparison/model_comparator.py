@@ -24,26 +24,27 @@ class ComparisonResult:
 
 class ModelComparator:
     @staticmethod
-    def compare_fields(request: Any, response: Any, field_mapping: Dict[str, str]) -> ComparisonResult:
-        mismatches: List[Mismatch] = []
+    def compare_fields(request: Any, response: Any, field_mapping: Dict[str, str]):
+        mismatches = []
 
         for request_field, response_field in field_mapping.items():
             request_value = ModelComparator._get_field_value(request, request_field)
             response_value = ModelComparator._get_field_value(response, response_field)
 
-            if str(request_value) == str(response_value):
-                continue
-            try:
-                left_dec = Decimal(str(request_value))
-                right_dec = Decimal(str(response_value))
-                if left_dec == right_dec:
-                    continue
-            except (InvalidOperation, ValueError, TypeError):
-                pass
-
-            mismatches.append(Mismatch(f'{request_field} -> {response_field}', request_value, response_value))
+            if not ModelComparator._values_equal(request_value, response_value):
+                mismatches.append(Mismatch(f'{request_field} -> {response_field}', request_value, response_value))
 
         return ComparisonResult(mismatches)
+
+    @staticmethod
+    def _values_equal(left: Any, right: Any) -> bool:
+        # Handle DB Decimal vs API float/int comparisons
+        if isinstance(left, Decimal) or isinstance(right, Decimal):
+            try:
+                return Decimal(str(left)) == Decimal(str(right))
+            except (ValueError, TypeError, InvalidOperation):
+                return str(left) == str(right)
+        return str(left) == str(right)
 
     @staticmethod
     def _get_field_value(obj: Any, field_name: str):

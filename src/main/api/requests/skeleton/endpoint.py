@@ -70,6 +70,12 @@ class Endpoint(Enum):
         response_model=DepositMoneyResponse
     )
 
+    TRANSFER_WITH_FRAUD_CHECK = EndpointConfig(
+        url='/accounts/transfer-with-fraud-check',
+        request_model=TransferMoneyRequest,
+        response_model=TransferMoneyResponse
+    )
+
     GET_TRANSACTIONS = EndpointConfig(
         url='/accounts/{accountId}/transactions',
         request_model=None,
