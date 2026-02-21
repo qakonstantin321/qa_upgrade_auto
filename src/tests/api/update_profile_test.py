@@ -16,11 +16,10 @@ class TestUpdateProfile:
     def test_valid_update_profile(self, api_manager: ApiManager,
                                   user_request: CreateUserRequest,
                                   update_profile_request: UpdateProfileRequest):
-        # TODO: не сохраняется name в БД при обновлении имени
         profile_resp = api_manager.user_steps.update_profile(user_request, update_profile_request)
 
-        profile_dao = api_manager.database_steps.get_user_by_username(profile_resp.customer.username)
-        DaoAndModelAssertions.assert_that(profile_resp.customer, profile_dao).match()
+        profile_dao = api_manager.database_steps.get_user_by_username(profile_resp.username)
+        DaoAndModelAssertions.assert_that(profile_resp, profile_dao).match()
 
     @pytest.mark.check_profile_name(expected_before=None, expected_after=None)
     @pytest.mark.parametrize(

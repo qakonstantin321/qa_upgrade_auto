@@ -19,7 +19,7 @@ services:
       - nbank-network
 
   backend:
-    image: nobugsme/nbank:with_fraud_check_with_transfer_fix
+    image: nobugsme/nbank:preprod_version
     container_name: nbank-app
     ports:
       - "4111:4111"
@@ -42,7 +42,7 @@ services:
       - nbank-network
 
   frontend:
-    image: nobugsme/nbank-ui:with_nginx
+    image: nobugsme/nbank-ui:preprod_version
     ports:
       - "3000:80"
     depends_on:

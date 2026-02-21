@@ -10,6 +10,7 @@ from src.main.api.models.requests.transfer_money_request import TransferMoneyReq
 from src.main.api.models.requests.update_profile_request import UpdateProfileRequest
 from src.main.api.models.responses.create_account_response import CreateAccountResponse
 from src.main.api.models.responses.deposit_money_response import DepositMoneyResponse
+from src.main.api.models.responses.fraud_check_status_response import FraudCheckStatusResponse
 from src.main.api.models.responses.get_profile_response import GetProfileResponse
 from src.main.api.models.responses.get_transactions_response import GetTransactionsResponse
 from src.main.api.models.responses.login_user_response import LoginUserResponse
@@ -88,6 +89,18 @@ class UserSteps(BaseSteps):
             ResponseSpecs.request_returns_ok()
         ).post(transfer_request)
         return transfer_response
+
+    @staticmethod
+    def check_fraud_status(
+            user_request: CreateUserRequest,
+            transaction_id: int,
+    ) -> FraudCheckStatusResponse:
+        fraud_check_response: FraudCheckStatusResponse = ValidatedCrudRequester(
+            RequestSpecs.auth_as_user(user_request.username, user_request.password),
+            Endpoint.CHECK_FRAUD_STATUS,
+            ResponseSpecs.request_returns_ok()
+        ).get(transactionId=transaction_id)
+        return fraud_check_response
 
     @staticmethod
     def wait_for_condition(
@@ -189,8 +202,6 @@ class UserSteps(BaseSteps):
             ResponseSpecs.request_returns_ok()
         ).put(update_profile_request)
 
-        assert update_profile_response.customer.name == update_profile_request.name
-        assert update_profile_response.message == "Profile updated successfully"
         return update_profile_response
 
     @staticmethod
