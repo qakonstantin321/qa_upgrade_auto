@@ -23,7 +23,7 @@ class TestDepositMoney:
                                 user_request: CreateUserRequest,
                                 deposit_money_request: DepositMoneyRequest):
         user_account: CreateAccountResponse = api_manager.user_steps.create_user_account(user_request)
-        deposit_money_request.id = user_account.id
+        deposit_money_request.accountId = user_account.id
 
         dashboard_page = UserDashboard(page).open()
         dashboard_page.deposit_money()
@@ -31,7 +31,7 @@ class TestDepositMoney:
         expect(deposit_page.deposit_money_panel_text).to_be_visible()
         deposit_page.deposit(deposit_money_request)
         deposit_page.check_alert_message_and_accept(
-            BankAlert.ACCOUNT_DEPOSITED.value.format(amount=deposit_money_request.balance,
+            BankAlert.ACCOUNT_DEPOSITED.value.format(amount=deposit_money_request.amount,
                                                      account=user_account.accountNumber))
 
         resp: GetTransactionsResponse = api_manager.user_steps.wait_for_condition(
@@ -39,8 +39,8 @@ class TestDepositMoney:
             condition=lambda response: len(response.transactions) == 1
         )
         assert len(resp.transactions) == 1
-        assert resp.transactions[0].amount == deposit_money_request.balance
-        assert resp.transactions[0].relatedAccountId == deposit_money_request.id
+        assert resp.transactions[0].amount == deposit_money_request.amount
+        assert resp.transactions[0].relatedAccountId == deposit_money_request.accountId
 
     @pytest.mark.parametrize(
         argnames='balance, error_value',
@@ -55,7 +55,7 @@ class TestDepositMoney:
                                    create_account: CreateAccountResponse,
                                    api_manager: ApiManager,
                                    balance: Union[float, int], error_value: str):
-        deposit_money_request = DepositMoneyRequest(id=create_account.id, balance=balance)
+        deposit_money_request = DepositMoneyRequest(accountId=create_account.id, amount=balance)
 
         deposit_page = DepositMoneyPage(page).open()
         deposit_page.deposit(deposit_money_request)

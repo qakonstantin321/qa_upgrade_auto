@@ -4,7 +4,9 @@ import time
 
 from src.main.api.fixtures.api_fixtures import *  # noqa:
 from src.main.api.fixtures.assertion_fixtures import *  # noqa:
+from src.main.api.fixtures.fraud_fixtures import *  # noqa:
 from src.main.api.fixtures.object_fixtures import *  # noqa:
+from src.main.api.fixtures.prepare_data_fixtures import *  # noqa:
 from src.main.api.fixtures.setup_hook import *  # noqa:
 from src.main.api.fixtures.user_fixtures import *  # noqa:
 

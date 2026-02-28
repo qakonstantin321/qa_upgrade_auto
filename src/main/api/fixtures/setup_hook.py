@@ -19,6 +19,7 @@ def user_session_extension(request: pytest.FixtureRequest, user_factory):
     auth_index: int = int(mark.kwargs.get("auth", 0))
 
     users: list[CreateUserRequest] = [user_factory() for _ in range(count)]
+    SessionStorage.add_users(users)
     page: Page = request.getfixturevalue("page")
     LoginPage(page).auth_as_user(users[auth_index])
 

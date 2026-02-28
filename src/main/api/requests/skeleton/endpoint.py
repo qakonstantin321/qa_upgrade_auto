@@ -13,6 +13,7 @@ from src.main.api.models.requests.update_profile_request import UpdateProfileReq
 from src.main.api.models.responses.create_account_response import CreateAccountResponse
 from src.main.api.models.responses.create_user_response import CreateUserResponse
 from src.main.api.models.responses.deposit_money_response import DepositMoneyResponse
+from src.main.api.models.responses.fraud_check_status_response import FraudCheckStatusResponse
 from src.main.api.models.responses.get_profile_response import GetProfileResponse
 from src.main.api.models.responses.get_transactions_response import GetTransactionsResponse
 from src.main.api.models.responses.login_user_response import LoginUserResponse
@@ -68,6 +69,18 @@ class Endpoint(Enum):
         url='/accounts/deposit',
         request_model=DepositMoneyRequest,
         response_model=DepositMoneyResponse
+    )
+
+    TRANSFER_WITH_FRAUD_CHECK = EndpointConfig(
+        url='/accounts/transfer-with-fraud-check',
+        request_model=TransferMoneyRequest,
+        response_model=TransferMoneyResponse
+    )
+
+    CHECK_FRAUD_STATUS = EndpointConfig(
+        url='/accounts/fraud-check/{transactionId}',
+        request_model=None,
+        response_model=FraudCheckStatusResponse
     )
 
     GET_TRANSACTIONS = EndpointConfig(

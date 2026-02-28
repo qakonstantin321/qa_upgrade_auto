@@ -5,6 +5,7 @@ import pytest
 from src.main.api.classes.api_manager import ApiManager
 from src.main.api.models.comparison.model_assertions import ModelAssertions
 from src.main.api.models.requests.create_user_request import CreateUserRequest
+from src.main.api.models.responses.fraud_check_status_response import FraudCheckStatusResponse
 from src.main.api.specs.response_specs import ResponseSpecs
 
 
@@ -254,13 +255,12 @@ def check_deposit_transaction_match(request: pytest.FixtureRequest):
     # Get deposit_money_response from node user_properties (guaranteed to exist by init_user_properties)
     user_props = request.node.user_properties
     deposit_response = user_props.get('deposit_money_response')
-    if deposit_response and len(deposit_response.transactions) > 0:
+    if deposit_response and deposit_response.transactions and len(deposit_response.transactions) > 0:
         assert len(get_transactions_resp.transactions) == 1, (
             f"Expected 1 transaction, but got {len(get_transactions_resp.transactions)}"
         )
         ModelAssertions(deposit_response.transactions[0], get_transactions_resp.transactions[0]).match()
     else:
-        # just check that there's 1 transaction
         assert len(get_transactions_resp.transactions) == 1, (
             f"Expected 1 transaction, but got {len(get_transactions_resp.transactions)}"
         )
@@ -326,6 +326,67 @@ def check_transfer_transaction(request: pytest.FixtureRequest):
         assert tr.amount == transfer_response.amount
         assert tr.relatedAccountId == transfer_response.senderAccountId
 
+
+@pytest.fixture(autouse=True)
+def check_fraud_status(request: pytest.FixtureRequest):
+    """
+    Marker-driven verification for fraud-check status by transaction ID.
+
+    Usage (example):
+      @pytest.mark.check_fraud_status(
+          user_source="fraud_check_user",
+          account_id_source="fraud_check_account_id",
+          expected_dict=TRANSFER_CHECK_STATUS_APPROVED_EXPECTED,
+      )
+    """
+    mark = request.node.get_closest_marker("check_fraud_status")
+    if not mark:
+        yield
+        return
+
+    user_source: str = mark.kwargs.get("user_source")
+    account_id_source: str = mark.kwargs.get("account_id_source")
+    expected_dict: dict = mark.kwargs.get("expected_dict")
+
+    if not user_source or not account_id_source:
+        raise ValueError("check_fraud_status requires user_source and account_id_source")
+    if not expected_dict:
+        raise ValueError("check_fraud_status requires expected_dict")
+
+    api_manager: ApiManager = request.getfixturevalue("api_manager")
+
+    yield
+
+    user_props = request.node.user_properties
+
+    user = user_props.get(user_source)
+    if not user:
+        user = _resolve_source(request, user_source)
+
+    account_parts = account_id_source.split('.')
+    account_obj_name = account_parts[0]
+    account_attr_name = account_parts[1] if len(account_parts) > 1 else "id"
+
+    account_obj = user_props.get(account_obj_name)
+    if account_obj:
+        account_id = int(getattr(account_obj, account_attr_name))
+    else:
+        account_id = int(_resolve_source(request, account_id_source))
+
+    get_transactions_resp = api_manager.user_steps.get_transactions(user, account_id)
+    assert len(get_transactions_resp.transactions) > 0, (
+        f"Expected at least 1 transaction, but got {len(get_transactions_resp.transactions)}"
+    )
+
+    transaction_id = get_transactions_resp.transactions[-1].id
+
+    fraud_check_resp = api_manager.user_steps.check_fraud_status(user, transaction_id)
+
+    expected_model = FraudCheckStatusResponse(
+        **expected_dict,
+        transactionId=transaction_id,
+    )
+    ModelAssertions(expected_model, fraud_check_resp).match()
 
 @pytest.fixture(autouse=True)
 def check_profile_name(request: pytest.FixtureRequest):

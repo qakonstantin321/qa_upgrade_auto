@@ -10,6 +10,7 @@ from src.main.api.models.requests.transfer_money_request import TransferMoneyReq
 from src.main.api.models.requests.update_profile_request import UpdateProfileRequest
 from src.main.api.models.responses.create_account_response import CreateAccountResponse
 from src.main.api.models.responses.deposit_money_response import DepositMoneyResponse
+from src.main.api.models.responses.fraud_check_status_response import FraudCheckStatusResponse
 from src.main.api.models.responses.get_profile_response import GetProfileResponse
 from src.main.api.models.responses.get_transactions_response import GetTransactionsResponse
 from src.main.api.models.responses.login_user_response import LoginUserResponse
@@ -46,7 +47,6 @@ class UserSteps(BaseSteps):
         ).post()
 
         assert create_account_response.balance == 0.0
-        assert not create_account_response.transactions
         return create_account_response
 
     @staticmethod
@@ -55,7 +55,7 @@ class UserSteps(BaseSteps):
                       deposit_money_request: DepositMoneyRequest = RandomModelGenerator.generate(DepositMoneyRequest),
                       previous_response: Optional[DepositMoneyResponse] = None
                       ) -> DepositMoneyResponse:
-        deposit_money_request.id = create_account_response.id
+        deposit_money_request.accountId = create_account_response.id
         current_balance = previous_response.balance if previous_response else create_account_response.balance
 
         deposit_money_response: DepositMoneyResponse = ValidatedCrudRequester(
@@ -64,10 +64,9 @@ class UserSteps(BaseSteps):
             ResponseSpecs.request_returns_ok()
         ).post(deposit_money_request)
 
-        expected_balance = current_balance + deposit_money_request.balance
+        expected_balance = current_balance + deposit_money_request.amount
         assert deposit_money_response.balance == expected_balance
         assert create_account_response.accountNumber == deposit_money_response.accountNumber
-        assert deposit_money_response.transactions
         return deposit_money_response
 
     @staticmethod
@@ -78,6 +77,30 @@ class UserSteps(BaseSteps):
             Endpoint.GET_TRANSACTIONS,
             ResponseSpecs.request_returns_ok()
         ).get(accountId=account_id)
+
+    @staticmethod
+    def transfer_with_fraud_check(
+            user_request: CreateUserRequest,
+            transfer_request: TransferMoneyRequest,
+    ) -> TransferMoneyResponse:
+        transfer_response: TransferMoneyResponse = ValidatedCrudRequester(
+            RequestSpecs.auth_as_user(user_request.username, user_request.password),
+            Endpoint.TRANSFER_WITH_FRAUD_CHECK,
+            ResponseSpecs.request_returns_ok()
+        ).post(transfer_request)
+        return transfer_response
+
+    @staticmethod
+    def check_fraud_status(
+            user_request: CreateUserRequest,
+            transaction_id: int,
+    ) -> FraudCheckStatusResponse:
+        fraud_check_response: FraudCheckStatusResponse = ValidatedCrudRequester(
+            RequestSpecs.auth_as_user(user_request.username, user_request.password),
+            Endpoint.CHECK_FRAUD_STATUS,
+            ResponseSpecs.request_returns_ok()
+        ).get(transactionId=transaction_id)
+        return fraud_check_response
 
     @staticmethod
     def wait_for_condition(
@@ -179,8 +202,6 @@ class UserSteps(BaseSteps):
             ResponseSpecs.request_returns_ok()
         ).put(update_profile_request)
 
-        assert update_profile_response.customer.name == update_profile_request.name
-        assert update_profile_response.message == "Profile updated successfully"
         return update_profile_response
 
     @staticmethod

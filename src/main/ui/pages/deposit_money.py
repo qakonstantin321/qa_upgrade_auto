@@ -23,7 +23,7 @@ class DepositMoneyPage(BasePage):
         return "/deposit"
 
     def deposit(self, deposit_money_request: DepositMoneyRequest):
-        self.account_select_by_id(deposit_money_request.id)
-        self.amount_input(deposit_money_request.balance)
+        self.account_select_by_id(deposit_money_request.accountId)
+        self.amount_input(deposit_money_request.amount)
         self.deposit_button.click()
         return self

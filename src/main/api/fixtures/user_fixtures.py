@@ -60,7 +60,7 @@ def deposit_account_20000_rubbles(api_manager: ApiManager,
                                   create_account: CreateAccountResponse) -> DepositMoneyResponse:
     """Пополнение аккаунта на 20000 рублей (4 депозита по 5000)"""
     deposit_money_request: DepositMoneyRequest = RandomModelGenerator.generate(DepositMoneyRequest)
-    deposit_money_request.balance = 5000
+    deposit_money_request.amount = 5000
 
     previous_response = api_manager.user_steps.deposit_money(
         user_request=user_request,

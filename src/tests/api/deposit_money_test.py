@@ -44,7 +44,7 @@ class TestDepositMoney:
                                    user_request: CreateUserRequest,
                                    create_account: CreateAccountResponse,
                                    balance: Union[float, int], error_value: str):
-        deposit_money_req = DepositMoneyRequest(id=create_account.id, balance=balance)
+        deposit_money_req = DepositMoneyRequest(accountId=create_account.id, amount=balance)
         api_manager.user_steps.invalid_deposit_money(user_request, deposit_money_req, error_value)
 
         deposit_dao = api_manager.database_steps.find_transaction_by_account_id(create_account.id)
@@ -56,7 +56,7 @@ class TestDepositMoney:
     def test_deposit_money_non_existing_account(self, api_manager: ApiManager,
                                                 user_request: CreateUserRequest):
         non_existing_account_id: int = 41214341
-        deposit_money_req = DepositMoneyRequest(id=non_existing_account_id, balance=RandomData.get_balance())
+        deposit_money_req = DepositMoneyRequest(accountId=non_existing_account_id, amount=RandomData.get_balance())
         api_manager.user_steps.deposit_money_invalid_account(user_request, deposit_money_req)
         api_manager.user_steps.get_transactions_forbidden(user_request, non_existing_account_id)
 
@@ -72,7 +72,7 @@ class TestDepositMoney:
                                                 new_user_request: CreateUserRequest):
         api_manager.admin_steps.create_user(new_user_request)
 
-        deposit_money_req = DepositMoneyRequest(id=create_account.id, balance=RandomData.get_balance())
+        deposit_money_req = DepositMoneyRequest(accountId=create_account.id, amount=RandomData.get_balance())
         api_manager.user_steps.deposit_money_invalid_account(new_user_request, deposit_money_req)
 
         deposit_dao = api_manager.database_steps.find_transaction_by_account_id(create_account.id)

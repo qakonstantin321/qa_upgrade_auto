@@ -8,3 +8,4 @@ faker
 pytest-xdist
 psycopg[binary]
 pytest-dotenv
+allure-python-commons

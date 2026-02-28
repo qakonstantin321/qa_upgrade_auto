@@ -1,43 +1,48 @@
 services:
   postgres:
-    image: postgres:15-alpine
+    image: postgres:15
+    container_name: nbank-postgres
     environment:
       POSTGRES_DB: nbank
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
       - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres -d nbank" ]
-      interval: 5s
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
       timeout: 5s
       retries: 5
     networks:
       - nbank-network
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
 
   backend:
-    image: nobugsme/nbank:with_database_with_fix
+    image: nobugsme/nbank:preprod_version
+    container_name: nbank-app
+    ports:
+      - "4111:4111"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/nbank
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-    ports:
-      - "4111:4111"
+      FRAUD_DETECTION_SERVICE_URL: http://host.docker.internal:8080
     depends_on:
       postgres:
         condition: service_healthy
+    restart: unless-stopped
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:4111/actuator/health || exit 1" ]
-      interval: 5s
-      timeout: 3s
-      retries: 20
+      test: ["CMD", "curl", "-f", "http://localhost:4111/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     networks:
       - nbank-network
 
   frontend:
-    image: nobugsme/nbank-ui:with_nginx
+    image: nobugsme/nbank-ui:preprod_version
     ports:
       - "3000:80"
     depends_on:
@@ -45,8 +50,8 @@ services:
     networks:
       - nbank-network
 
-networks:
-  nbank-network:
-
 volumes:
   postgres_data:
+
+networks:
+  nbank-network:
