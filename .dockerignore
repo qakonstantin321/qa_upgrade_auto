@@ -1,0 +1,29 @@
+# --- VSC ---
+.git
+.gitignore
+
+# --- Python cache ---
+__pycache__/
+.pytest_cache/
+*.log
+
+# --- Virtualenv ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- Build artifacts ---
+build/
+dist/
+
+# --- IDE ---
+.idea/
+.vscode/
+.DS_Store
+
+# --- Playwright browsers cache (huge) ---
+.pw-browsers/
+
+# --- Cursor/other tooling ---
+.cursor/
