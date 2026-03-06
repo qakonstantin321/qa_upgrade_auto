@@ -70,16 +70,23 @@ jobs:
         run: |
           export NBANK_BACKEND_IMAGE="nobugsme/nbank:${BACKEND_TAG}"
           docker compose -f infra/docker-compose/docker-compose.yaml up -d
-          
+
+          docker compose -f infra/docker-compose/docker-compose.yaml logs -f backend &
+          LOGS_PID=$!
+
           echo "Waiting for backend to be ready..."
-          for i in {1..80}; do
-            if curl -sf http://localhost:4111/actuator/health >/dev/null; then
-              echo "Backend is UP"
-              break
+          SECONDS=0
+          until curl -sf "http://localhost:4111/actuator/health" >/dev/null 2>&1; do
+            sleep 20
+            if [ "$SECONDS" -ge 400 ]; then
+              echo "Backend did not start within 400 seconds. Aborting tests."
+              kill "$LOGS_PID" >/dev/null 2>&1 || true
+              exit 1
             fi
-            sleep 5
-          done 
-          curl -sf http://localhost:4111/actuator/health
+            echo "Backend is not ready yet, healthcheck is unavailable..."
+          done
+
+          kill "$LOGS_PID" >/dev/null 2>&1 || true
 
       - name: Run pytest
         env:
