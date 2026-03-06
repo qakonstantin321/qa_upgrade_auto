@@ -31,4 +31,5 @@ class ValidatedCrudRequester(HttpRequest):
         response = self.crud_requester.put(model)
         return self._adapter.validate_python(response.json())
 
-    def delete(self, _id: int): ...
+    def delete(self, _id: int):
+        ...

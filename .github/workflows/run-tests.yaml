@@ -1,0 +1,134 @@
+name: Run tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      api_version:
+        description: "Backend version tag (matches @pytest.mark.api_version(..))"
+        required: true
+        type: choice
+        options:
+          - with_database
+          - with_fraud_check
+      suite:
+        description: "Which suite to run"
+        required: true
+        type: choice
+        options:
+          - api
+          - ui
+          - api+ui
+      markers:
+        description: "Additional pytest markers"
+        required: false
+        default: ""
+      backend_tag:
+        description: "Docker image tag for backend (e.g. with_database_with_fix, with_fraud_check)"
+        required: true
+        type: string
+        default: ""
+  push:
+    branches: [ main, master, tests-in-pipeline ]
+    paths:
+      - 'src/**'
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          # если requirements.txt поменялся, то ключ новый, кеш не используется
+          # если requirements.txt НЕ поменялся, то ключ старый, кеш используется
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8
+          playwright install --with-deps
+
+      - name: Checkstyle (flake8)
+        run: |
+          flake8 src/ --count --statistics
+
+      - name: Start services
+        env:
+          BACKEND_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.backend_tag || 'with_database_with_fix' }}
+        run: |
+          export NBANK_BACKEND_IMAGE="nobugsme/nbank:${BACKEND_TAG}"
+          docker compose -f infra/docker-compose/docker-compose.yaml up -d
+          
+          echo "Waiting for backend to be ready..."
+          for i in {1..60}; do
+            if curl -sf http://localhost:4111/actuator/health >/dev/null; then
+              echo "Backend is UP"
+              break
+            fi
+            sleep 2
+          done 
+          curl -sf http://localhost:4111/actuator/health
+
+      - name: Run pytest
+        env:
+          UI_BASE_URL: http://localhost:3000
+          DB_HOST: localhost
+          # при push inputs нет — подставляем значения по умолчанию
+          API_VERSION_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.api_version || 'with_database' }}
+          SUITE_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.suite || 'api' }}
+          MARKERS_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.markers || '' }}
+        run: |
+          set -eux
+          
+          API_VERSION_INPUT="${API_VERSION_INPUT:-with_database}"
+          SUITE_INPUT="${SUITE_INPUT:-api}"
+          MARKERS="${MARKERS_INPUT:-}"
+          
+          M_OPT=""
+          
+          if [ -n "$MARKERS" ]; then
+            M_OPT="-m $MARKERS"
+          fi
+          
+          if [ "$SUITE_INPUT" = "api" ]; then
+            pytest -m api --api-version "$API_VERSION_INPUT" $M_OPT -q
+          elif [ "$SUITE_INPUT" = "ui" ]; then
+            pytest -m ui $M_OPT -q
+          else
+            pytest -m api --api-version "$API_VERSION_INPUT" $M_OPT -q
+            pytest -m ui $M_OPT -q
+          fi
+
+      - name: Build Docker image
+        if: github.event_name == 'push' && success()
+        env:
+          TAG: ${{ github.sha }}
+        run: |
+          IMAGE="autotests"
+          echo "Building Docker image: ${IMAGE}:${TAG}"
+          docker build -t "${IMAGE}:${TAG}" .
+
+      - name: Push Docker image
+        if: github.event_name == 'push' && success()
+        env:
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          TAG: ${{ github.sha }}
+        run: |
+          chmod +x push-tests.sh
+          ./push-tests.sh
+
+      - name: Shutdown
+        if: always()
+        run: docker compose -f infra/docker-compose/docker-compose.yaml down
