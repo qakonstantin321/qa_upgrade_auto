@@ -1,57 +1,91 @@
+# список сервисов
 services:
+#  сервис базы данных
   postgres:
-    image: postgres:15
-    container_name: nbank-postgres
+#    образ на котором строится сервис
+    image: postgres:15-alpine
+#    переменные окружения для иницилизации БД
     environment:
+#      создать базу данных nbank
       POSTGRES_DB: nbank
+#      создать пользователя
       POSTGRES_USER: postgres
+#      создать пароль к пользователю
       POSTGRES_PASSWORD: postgres
+#      пробросить порты наружу за пределы докер контейнера
     ports:
       - "5433:5432"
+#    проверка здоровья контейнера
+    healthcheck:
+#      команда проверки здоровья
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d nbank" ]
+#      как часто запускать проверку здоровья
+      interval: 5s
+#      сколько ждать выполнения проверки, прежде чем считать ее неуспешной
+      timeout: 5s
+#      сколько раз может не пройти проверка здоровья, прежде чем мы пометим контейнер как нездоровый
+      retries: 5
+#      подключаемся к сети банка
+    networks:
+      - nbank-network
+#    добавляем хранилище postgres_data для хранения данных из postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - nbank-network
 
+#  сервис бекенда
   backend:
+#    образ на котором поднимается контейнер
     image: nobugsme/nbank:preprod_version
-    container_name: nbank-app
+#    переменные окружения для подключения к базе данных из бекенда на спринг буте
+    environment:
+#      УРЛ подключения к бд
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/nbank
+#      логин к базе
+      SPRING_DATASOURCE_USERNAME: postgres
+#      пароль к базе
+      SPRING_DATASOURCE_PASSWORD: postgres
+#      урл для фрод сервиса
+      FRAUD_DETECTION_SERVICE_URL: http://host.docker.internal:8080
+#      открываем порт бекенда наружу вне контейнера
     ports:
       - "4111:4111"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/nbank
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-      FRAUD_DETECTION_SERVICE_URL: http://host.docker.internal:8080
+#      зависимость запуска
     depends_on:
+#      стартуем только когда сервис базы данных поднялся и прошел проверку здоровья
       postgres:
         condition: service_healthy
-    restart: unless-stopped
+#    проверка здоровья
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4111/actuator/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+#      делаем запрос на эндпоинт по здоровью спринг бута
+      test: [ "CMD-SHELL", "curl -f http://localhost:4111/actuator/health || exit 1" ]
+#      повторяем проверку каждые 5 секунд
+      interval: 5s
+#      таймаунт по проверке статуса здоровья
+      timeout: 3s
+#      повторяем до 20 раз
+      retries: 20
+#      запускаем бекенд в той же сети
     networks:
       - nbank-network
 
+# описание сервиса фронтенд
   frontend:
+#    образ, на котором строится контейнер - в нашем случае уже с nginx
     image: nobugsme/nbank-ui:preprod_version
+#    прокидываем порт, внутри 3000, а снаружи - 80
     ports:
       - "3000:80"
+#    зависмость на бекенд сервис, сначала бд, потом бекенд, фронтенд
     depends_on:
       - backend
+#    в той же сети
     networks:
       - nbank-network
 
-volumes:
-  postgres_data:
-
+#обьявляем пользовательскую сеть
 networks:
   nbank-network:
+
+# обьявление volume /var/lib/docker/volumes/ c названием postgres_data
+volumes:
+  postgres_data:
