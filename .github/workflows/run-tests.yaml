@@ -72,12 +72,12 @@ jobs:
           docker compose -f infra/docker-compose/docker-compose.yaml up -d
           
           echo "Waiting for backend to be ready..."
-          for i in {1..60}; do
+          for i in {1..80}; do
             if curl -sf http://localhost:4111/actuator/health >/dev/null; then
               echo "Backend is UP"
               break
             fi
-            sleep 2
+            sleep 5
           done 
           curl -sf http://localhost:4111/actuator/health
 
