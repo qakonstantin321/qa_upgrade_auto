@@ -44,11 +44,6 @@ jobs:
         with:
           python-version: "3.13"
 
-      - name: Set up QEMU for multi-arch support
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: arm64
-
       - uses: actions/cache@v4
         with:
           path: ~/.cache/pip
@@ -74,6 +69,7 @@ jobs:
           BACKEND_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.backend_tag || 'preprod_version' }}
         run: |
           export NBANK_BACKEND_IMAGE="nobugsme/nbank:${BACKEND_TAG}"
+          export DOCKER_DEFAULT_PLATFORM=linux/amd64
           docker compose -f infra/docker-compose/docker-compose.yaml up -d
 
           docker compose -f infra/docker-compose/docker-compose.yaml logs -f backend &
