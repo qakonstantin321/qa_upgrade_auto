@@ -44,6 +44,11 @@ jobs:
         with:
           python-version: "3.13"
 
+      - name: Set up QEMU for multi-arch support
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
       - uses: actions/cache@v4
         with:
           path: ~/.cache/pip
