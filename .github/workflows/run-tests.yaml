@@ -31,6 +31,11 @@ on:
           - with_fraud_check
           - preprod_version
         default: "preprod_version"
+      num_threads:
+        description: "Number of parallel threads (default: 4)"
+        required: false
+        type: string
+        default: "4"
   push:
     branches: [ main, master, tests-in-pipeline ]
     paths:
@@ -97,26 +102,29 @@ jobs:
           API_VERSION_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.api_version || 'with_database' }}
           SUITE_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.suite || 'api' }}
           MARKERS_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.markers || '' }}
+          NUM_THREADS_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.num_threads || '4' }}
         run: |
           set -eux
           
           API_VERSION_INPUT="${API_VERSION_INPUT:-with_database}"
           SUITE_INPUT="${SUITE_INPUT:-api}"
           MARKERS="${MARKERS_INPUT:-}"
+          NUM_THREADS="${NUM_THREADS_INPUT:-4}"
           
           M_OPT=""
+          N_OPT="-n $NUM_THREADS"
           
           if [ -n "$MARKERS" ]; then
             M_OPT="-m $MARKERS"
           fi
           
           if [ "$SUITE_INPUT" = "api" ]; then
-            pytest -m api --api-version "$API_VERSION_INPUT" $M_OPT -q
+            pytest -m api --api-version "$API_VERSION_INPUT" $M_OPT $N_OPT -q
           elif [ "$SUITE_INPUT" = "ui" ]; then
-            pytest -m ui $M_OPT -q
+            pytest -m ui $M_OPT $N_OPT -q
           else
-            pytest -m api --api-version "$API_VERSION_INPUT" $M_OPT -q
-            pytest -m ui $M_OPT -q
+            pytest -m api --api-version "$API_VERSION_INPUT" $M_OPT $N_OPT -q
+            pytest -m ui $M_OPT $N_OPT -q
           fi
 
       - name: Build Docker image
