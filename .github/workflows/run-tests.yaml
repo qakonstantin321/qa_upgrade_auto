@@ -23,10 +23,14 @@ on:
         required: false
         default: ""
       backend_tag:
-        description: "Docker image tag for backend (e.g. with_database_with_fix, with_fraud_check)"
+        description: "Docker image tag for backend"
         required: true
-        type: string
-        default: ""
+        type: choice
+        options:
+          - with_database_with_fix
+          - with_fraud_check
+          - preprod_version
+        default: "preprod_version"
   push:
     branches: [ main, master, tests-in-pipeline ]
     paths:
