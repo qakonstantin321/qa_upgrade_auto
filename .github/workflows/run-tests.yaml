@@ -44,22 +44,10 @@ jobs:
         with:
           python-version: "3.13"
 
-      - name: Check system architecture
-        run: |
-          uname -m
-          docker info --format '{{.Architecture}}'
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: arm64
-
       - uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-          # если requirements.txt поменялся, то ключ новый, кеш не используется
-          # если requirements.txt НЕ поменялся, то ключ старый, кеш используется
           restore-keys: |
             ${{ runner.os }}-pip-
 
@@ -102,7 +90,6 @@ jobs:
         env:
           UI_BASE_URL: http://localhost:3000
           DB_HOST: localhost
-          # при push inputs нет — подставляем значения по умолчанию
           API_VERSION_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.api_version || 'with_database' }}
           SUITE_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.suite || 'api' }}
           MARKERS_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.markers || '' }}
@@ -132,19 +119,33 @@ jobs:
         if: github.event_name == 'push' && success()
         env:
           TAG: ${{ github.sha }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          IMAGE_NAME: "autotests"
         run: |
-          IMAGE="autotests"
-          echo "Building Docker image: ${IMAGE}:${TAG}"
-          docker build -t "${IMAGE}:${TAG}" .
+          echo "Building Docker image: ${IMAGE_NAME}:${TAG}"
+          docker build -t "${IMAGE_NAME}:${TAG}" .
 
-      - name: Push Docker image
+      - name: Login to Docker Hub
+        if: github.event_name == 'push' && success()
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push Docker image to Docker Hub
         if: github.event_name == 'push' && success()
         env:
-          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           TAG: ${{ github.sha }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          IMAGE_NAME: "autotests"
         run: |
-          chmod +x push-tests.sh
-          ./push-tests.sh
+          FULL_IMAGE_NAME="${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${TAG}"
+          docker tag "${IMAGE_NAME}:${TAG}" "${FULL_IMAGE_NAME}"
+          docker push "${FULL_IMAGE_NAME}"
+          
+          echo "Образ успешно загружен: ${FULL_IMAGE_NAME}"
+          echo "Для скачивания образа выполните:"
+          echo "docker pull ${FULL_IMAGE_NAME}"
 
       - name: Shutdown
         if: always()
