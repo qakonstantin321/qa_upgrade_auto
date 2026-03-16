@@ -34,7 +34,7 @@ on:
 
 jobs:
   run:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     timeout-minutes: 30
 
     steps:
@@ -69,7 +69,6 @@ jobs:
           BACKEND_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.backend_tag || 'preprod_version' }}
         run: |
           export NBANK_BACKEND_IMAGE="nobugsme/nbank:${BACKEND_TAG}"
-          export DOCKER_DEFAULT_PLATFORM=linux/amd64
           docker compose -f infra/docker-compose/docker-compose.yaml up -d
 
           docker compose -f infra/docker-compose/docker-compose.yaml logs -f backend &
