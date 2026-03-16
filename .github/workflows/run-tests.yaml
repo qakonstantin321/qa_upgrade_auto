@@ -18,6 +18,7 @@ on:
           - api
           - ui
           - api+ui
+        default: "api+ui"
       markers:
         description: "Additional pytest markers"
         required: false
