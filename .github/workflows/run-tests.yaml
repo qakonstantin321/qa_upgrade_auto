@@ -101,14 +101,14 @@ jobs:
           UI_BASE_URL: http://localhost:3000
           DB_HOST: localhost
           API_VERSION_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.api_version || 'with_database' }}
-          SUITE_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.suite || 'api' }}
+          SUITE_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.suite || 'api+ui' }}
           MARKERS_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.markers || '' }}
           NUM_THREADS_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.num_threads || '4' }}
         run: |
           set -eux
           
           API_VERSION_INPUT="${API_VERSION_INPUT:-with_database}"
-          SUITE_INPUT="${SUITE_INPUT:-api}"
+          SUITE_INPUT="${SUITE_INPUT:-api+ui}}"
           MARKERS="${MARKERS_INPUT:-}"
           NUM_THREADS="${NUM_THREADS_INPUT:-4}"
           
