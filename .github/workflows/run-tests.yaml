@@ -49,6 +49,11 @@ jobs:
           uname -m
           docker info --format '{{.Architecture}}'
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
       - uses: actions/cache@v4
         with:
           path: ~/.cache/pip

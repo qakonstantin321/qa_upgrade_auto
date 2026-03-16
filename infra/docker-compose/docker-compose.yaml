@@ -34,7 +34,6 @@ services:
 
   #  сервис бекенда
   backend:
-    platform: linux/amd64
     #    образ, на котором поднимается контейнер (NBANK_BACKEND_IMAGE из workflow или окружения)
     image: ${NBANK_BACKEND_IMAGE:-nobugsme/nbank:preprod_version}
     #    переменные окружения для подключения к базе данных из бекенда на спринг буте
@@ -69,7 +68,6 @@ services:
 
   # описание сервиса фронтенд
   frontend:
-    platform: linux/amd64
     #    образ, на котором строится контейнер - в нашем случае уже с nginx
     image: nobugsme/nbank-ui:preprod_version
     #    прокидываем порт, внутри 3000, а снаружи - 80
