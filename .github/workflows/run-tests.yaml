@@ -44,6 +44,11 @@ jobs:
         with:
           python-version: "3.13"
 
+      - name: Check system architecture
+        run: |
+          uname -m
+          docker info --format '{{.Architecture}}'
+
       - uses: actions/cache@v4
         with:
           path: ~/.cache/pip
