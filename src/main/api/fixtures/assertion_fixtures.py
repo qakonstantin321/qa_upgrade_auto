@@ -388,6 +388,7 @@ def check_fraud_status(request: pytest.FixtureRequest):
     )
     ModelAssertions(expected_model, fraud_check_resp).match()
 
+
 @pytest.fixture(autouse=True)
 def check_profile_name(request: pytest.FixtureRequest):
     """

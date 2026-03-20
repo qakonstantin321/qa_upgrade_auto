@@ -38,7 +38,7 @@ class RequestSpecs:
             ).post(LoginUserRequest(username=username, password=password))
         except Exception as exc:
             logging.error("Authentication failed for %s", username)
-            raise RuntimeError("Failed to authenticate user")  from exc
+            raise RuntimeError("Failed to authenticate user") from exc
 
         auth_header = response.headers.get("Authorization")
         headers = RequestSpecs.default_req_headers()

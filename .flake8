@@ -1,0 +1,21 @@
+[flake8]
+# Максимальная длина строки
+max-line-length = 127
+
+# Игнорируемые ошибки и предупреждения
+ignore = C901
+
+# Исключаемые директории
+exclude =
+    .git,
+    __pycache__,
+    .venv,
+    venv,
+    env,
+    .env,
+    *.egg-info
+
+# Проверяемые файлы
+per-file-ignores =
+    __init__.py:F401
+
