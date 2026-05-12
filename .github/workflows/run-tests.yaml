@@ -43,14 +43,21 @@ on:
         type: string
         default: "50"
   push:
-    branches: [ main, master, tests-in-pipeline ]
+    branches: [ main, master, tests-in-pipeline, reports ]
     paths:
       - 'src/**'
+      - 'swagger_coverage.py'
+      - 'conftest.py'
+      - 'Dockerfile'
+      - '.github/workflows/**'
+      - 'scripts/**'
 
 jobs:
   run:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 30
+    env:
+      PYTHONPATH: ${{ github.workspace }}
 
     steps:
       - uses: actions/checkout@v6
@@ -156,7 +163,8 @@ jobs:
         id: swagger_gate
         if: always()
         env:
-          MIN_SWAGGER_COVERAGE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.min_swagger_coverage || '50' }}
+          # workflow_dispatch: значение из inputs; push и др.: по умолчанию 50
+          MIN_SWAGGER_COVERAGE: ${{ github.event.inputs.min_swagger_coverage || '50' }}
         run: |
           sudo apt-get update -qq && sudo apt-get install -y jq
           chmod +x scripts/check_swagger_coverage_gate.sh
