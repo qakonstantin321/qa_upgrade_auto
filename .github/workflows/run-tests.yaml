@@ -37,6 +37,11 @@ on:
         required: false
         type: string
         default: "4"
+      min_swagger_coverage:
+        description: "Fail job if Swagger API coverage is below this percent (quality gate)"
+        required: false
+        type: string
+        default: "50"
   push:
     branches: [ main, master, tests-in-pipeline ]
     paths:
@@ -65,7 +70,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install flake8
           playwright install --with-deps
 
       - name: Checkstyle (flake8)
@@ -104,11 +108,16 @@ jobs:
           SUITE_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.suite || 'api+ui' }}
           MARKERS_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.markers || '' }}
           NUM_THREADS_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.num_threads || '4' }}
+          SWAGGER_URL: http://localhost:4111/v3/api-docs
+          SWAGGER_COVERAGE_REPORT: "0"
         run: |
           set -eux
           
+          mkdir -p target/allure-results
+          mkdir -p target/swagger-coverage-output
+          
           API_VERSION_INPUT="${API_VERSION_INPUT:-with_database}"
-          SUITE_INPUT="${SUITE_INPUT:-api+ui}}"
+          SUITE_INPUT="${SUITE_INPUT:-api+ui}"
           MARKERS="${MARKERS_INPUT:-}"
           NUM_THREADS="${NUM_THREADS_INPUT:-4}"
           
@@ -120,45 +129,117 @@ jobs:
           fi
           
           if [ "$SUITE_INPUT" = "api" ]; then
-            pytest -m api --api-version "$API_VERSION_INPUT" $M_OPT $N_OPT -q
+            pytest -m api --api-version "$API_VERSION_INPUT" $M_OPT $N_OPT -q --alluredir=target/allure-results
           elif [ "$SUITE_INPUT" = "ui" ]; then
-            pytest -m ui $M_OPT $N_OPT -q
+            pytest -m ui $M_OPT $N_OPT -q --alluredir=target/allure-results
           else
-            pytest -m api --api-version "$API_VERSION_INPUT" $M_OPT $N_OPT -q
-            pytest -m ui $M_OPT $N_OPT -q
+            pytest -m api --api-version "$API_VERSION_INPUT" $M_OPT $N_OPT -q --alluredir=target/allure-results
+            pytest -m ui $M_OPT $N_OPT -q --alluredir=target/allure-results
           fi
 
-      - name: Build Docker image
-        if: github.event_name == 'push' && success()
+      - name: Generate Swagger Coverage Report
+        if: always()
         env:
-          TAG: ${{ github.sha }}
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          IMAGE_NAME: "autotests"
+          SWAGGER_URL: http://localhost:4111/v3/api-docs
         run: |
-          echo "Building Docker image: ${IMAGE_NAME}:${TAG}"
-          docker build -t "${IMAGE_NAME}:${TAG}" .
+          echo "Generating Swagger coverage report..."
+          python -c "
+          from swagger_coverage import get_swagger_coverage
+          import os
+          coverage = get_swagger_coverage()
+          swagger_url = os.getenv('SWAGGER_URL', 'http://localhost:4111/v3/api-docs')
+          report = coverage.generate_report(swagger_url)
+          print(f'Report generated: {report}')
+          "
 
-      - name: Login to Docker Hub
-        if: github.event_name == 'push' && success()
-        uses: docker/login-action@v4
+      - name: API coverage quality gate
+        id: swagger_gate
+        if: always()
+        env:
+          MIN_SWAGGER_COVERAGE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.min_swagger_coverage || '50' }}
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y jq
+          chmod +x scripts/check_swagger_coverage_gate.sh
+          bash scripts/check_swagger_coverage_gate.sh target/swagger-coverage-metrics.json "$MIN_SWAGGER_COVERAGE"
+
+      - name: Load test report history
+        uses: actions/checkout@v4
+        if: always() && steps.swagger_gate.outcome == 'success'
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          ref: gh-pages
+          path: gh-pages
 
-      - name: Push Docker image to Docker Hub
-        if: github.event_name == 'push' && success()
-        env:
-          TAG: ${{ github.sha }}
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          IMAGE_NAME: "autotests"
+      - name: Build test report
+        uses: simple-elf/allure-report-action@v1.7
+        if: always() && steps.swagger_gate.outcome == 'success'
+        with:
+          gh_pages: gh-pages
+          allure_results: target/allure-results
+          allure_history: allure-history
+
+      - name: Assemble GitHub Pages site (test-report / run id)
+        if: always() && steps.swagger_gate.outcome == 'success'
         run: |
-          FULL_IMAGE_NAME="${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${TAG}"
-          docker tag "${IMAGE_NAME}:${TAG}" "${FULL_IMAGE_NAME}"
-          docker push "${FULL_IMAGE_NAME}"
-          
-          echo "Образ успешно загружен: ${FULL_IMAGE_NAME}"
-          echo "Для скачивания образа выполните:"
-          echo "docker pull ${FULL_IMAGE_NAME}"
+          set -eux
+          RUN="${{ github.run_number }}"
+          SITE="gh-pages-site"
+          mkdir -p "${SITE}/test-report/${RUN}/allure-report"
+          mkdir -p "${SITE}/test-report/${RUN}/swagger-coverage/widgets"
+
+          if [[ -d "allure-history/${RUN}" ]] && [[ -f "allure-history/${RUN}/index.html" ]]; then
+            cp -r "allure-history/${RUN}/." "${SITE}/test-report/${RUN}/allure-report/"
+          elif [[ -f "allure-history/index.html" ]]; then
+            cp -r allure-history/. "${SITE}/test-report/${RUN}/allure-report/"
+          else
+            echo "Warning: Allure index not found; writing placeholder."
+            echo '<!DOCTYPE html><html><body><p>Allure report unavailable for this run.</p></body></html>' > "${SITE}/test-report/${RUN}/allure-report/index.html"
+          fi
+
+          if [[ -f target/swagger-coverage-report.html ]]; then
+            cp target/swagger-coverage-report.html "${SITE}/test-report/${RUN}/swagger-coverage/index.html"
+          else
+            echo '<!DOCTYPE html><html><body><p>Swagger coverage HTML missing.</p></body></html>' > "${SITE}/test-report/${RUN}/swagger-coverage/index.html"
+          fi
+
+          if [[ -f target/swagger-coverage-metrics.json ]]; then
+            cp target/swagger-coverage-metrics.json "${SITE}/test-report/${RUN}/swagger-coverage/widgets/coverage.json"
+          else
+            echo '{"coverage_percent":0,"error":true}' > "${SITE}/test-report/${RUN}/swagger-coverage/widgets/coverage.json"
+          fi
+
+          if [[ -d target/swagger-coverage-output ]]; then
+            mkdir -p "${SITE}/test-report/${RUN}/swagger-coverage/raw-calls"
+            cp -r target/swagger-coverage-output/. "${SITE}/test-report/${RUN}/swagger-coverage/raw-calls/" 2>/dev/null || true
+          fi
+
+          cat > "${SITE}/index.html" << EOF
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="refresh" content="0; url=./test-report/${RUN}/allure-report/index.html" />
+            <title>Test reports</title>
+          </head>
+          <body>
+            <p><a href="./test-report/${RUN}/allure-report/index.html">Allure — run ${RUN}</a></p>
+            <p><a href="./test-report/${RUN}/swagger-coverage/index.html">Swagger API coverage — run ${RUN}</a></p>
+          </body>
+          </html>
+          EOF
+
+          ALLURE_IDX="${SITE}/test-report/${RUN}/allure-report/index.html"
+          if [[ -f "$ALLURE_IDX" ]]; then
+            sed -i 's|</body>|<div style="position:fixed;bottom:16px;right:16px;z-index:9999"><a href="../swagger-coverage/index.html" target="_blank" style="background:#4CAF50;color:#fff;padding:10px 16px;text-decoration:none;border-radius:6px;font-family:sans-serif">API coverage</a></div></body>|' "$ALLURE_IDX"
+          fi
+
+      - name: Publish test report
+        uses: peaceiris/actions-gh-pages@v4
+        if: always() && steps.swagger_gate.outcome == 'success'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: gh-pages-site
+          keep_files: true
 
       - name: Shutdown
         if: always()
