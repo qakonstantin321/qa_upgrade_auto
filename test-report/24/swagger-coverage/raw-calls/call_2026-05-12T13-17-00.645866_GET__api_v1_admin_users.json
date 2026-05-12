@@ -1,0 +1,111 @@
+{
+  "method": "GET",
+  "path": "/api/v1/admin/users",
+  "originalUrl": "http://localhost:4111/api/v1/admin/users",
+  "timestamp": "2026-05-12T13:17:00.645866",
+  "statusCode": 200,
+  "requestBody": null,
+  "responseBody": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "$2a$10$ialR8PjfWr5S6DAfl4ywPOh.rhw5UBIVTELTMFt5/v37m21odnUqC",
+      "name": "System Administrator",
+      "role": "ADMIN",
+      "accounts": []
+    },
+    {
+      "id": 2,
+      "username": "john_doe",
+      "password": "$2a$10$d4Gx0d.iFDZWYHFZfo9JG.7EHfaW3W8tk4Qf661mW4JUmvHmLoD5.",
+      "name": "John Doe",
+      "role": "USER",
+      "accounts": [
+        {
+          "id": 1,
+          "accountNumber": "ACC12345678",
+          "balance": 1000.0
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "username": "jane_smith",
+      "password": "$2a$10$d4Gx0d.iFDZWYHFZfo9JG.7EHfaW3W8tk4Qf661mW4JUmvHmLoD5.",
+      "name": "Jane Smith",
+      "role": "USER",
+      "accounts": [
+        {
+          "id": 2,
+          "accountNumber": "ACC87654321",
+          "balance": 2500.5
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "username": "bob_wilson",
+      "password": "$2a$10$d4Gx0d.iFDZWYHFZfo9JG.7EHfaW3W8tk4Qf661mW4JUmvHmLoD5.",
+      "name": "Bob Wilson",
+      "role": "USER",
+      "accounts": [
+        {
+          "id": 3,
+          "accountNumber": "ACC11223344",
+          "balance": 500.25
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "username": "X5sFQX0hnuBNioG",
+      "password": "$2a$10$4DyQOWDBl9GMepovpyNXR.DpCQaJBK/wLZuITzj.BGDf3FNVqMy8S",
+      "name": null,
+      "role": "USER",
+      "accounts": [
+        {
+          "id": 20,
+          "accountNumber": "ACCDE971B1D",
+          "balance": 0.0
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "username": "hFAIoJ",
+      "password": "$2a$10$ReAdInH3/RwucPhNjzI.hugnJXTd1qJAKC/zJRSTh14XQKQnJoPbe",
+      "name": null,
+      "role": "USER",
+      "accounts": [
+        {
+          "id": 21,
+          "accountNumber": "ACC26AC1A23",
+          "balance": 0.0
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "username": "iNl3VC",
+      "password": "$2a$10$ruGdJDFBUOT3kvFWDTRVAu.92xDEu6VANWlh3wLeJzTNg8Gjox16i",
+      "name": null,
+      "role": "USER",
+      "accounts": []
+    },
+    {
+      "id": 30,
+      "username": "sVt",
+      "password": "$2a$10$YVDKraixjZnXtc51Dxf8kuesqCzQqdcou7qf6IG7Mizm1zedMB/qy",
+      "name": null,
+      "role": "USER",
+      "accounts": []
+    }
+  ],
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic YWRtaW46YWRtaW4="
+  }
+}

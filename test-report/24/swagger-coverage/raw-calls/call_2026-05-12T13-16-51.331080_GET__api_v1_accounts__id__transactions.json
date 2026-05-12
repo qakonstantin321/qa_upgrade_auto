@@ -1,0 +1,18 @@
+{
+  "method": "GET",
+  "path": "/api/v1/accounts/{id}/transactions",
+  "originalUrl": "http://localhost:4111/api/v1/accounts/41214341/transactions",
+  "timestamp": "2026-05-12T13:16:51.331080",
+  "statusCode": 403,
+  "requestBody": null,
+  "responseBody": {
+    "message": "You do not have permission to access this account"
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic YmEwSGFvUkY6SFRNa3VkbTgzOSQm"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "method": "GET",
+  "path": "/api/v1/admin/users",
+  "originalUrl": "http://localhost:4111/api/v1/admin/users",
+  "timestamp": "2026-05-12T13:17:03.498461",
+  "statusCode": 200,
+  "requestBody": null,
+  "responseBody": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "$2a$10$ialR8PjfWr5S6DAfl4ywPOh.rhw5UBIVTELTMFt5/v37m21odnUqC",
+      "name": "System Administrator",
+      "role": "ADMIN",
+      "accounts": []
+    },
+    {
+      "id": 2,
+      "username": "john_doe",
+      "password": "$2a$10$d4Gx0d.iFDZWYHFZfo9JG.7EHfaW3W8tk4Qf661mW4JUmvHmLoD5.",
+      "name": "John Doe",
+      "role": "USER",
+      "accounts": [
+        {
+          "id": 1,
+          "accountNumber": "ACC12345678",
+          "balance": 1000.0
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "username": "jane_smith",
+      "password": "$2a$10$d4Gx0d.iFDZWYHFZfo9JG.7EHfaW3W8tk4Qf661mW4JUmvHmLoD5.",
+      "name": "Jane Smith",
+      "role": "USER",
+      "accounts": [
+        {
+          "id": 2,
+          "accountNumber": "ACC87654321",
+          "balance": 2500.5
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "username": "bob_wilson",
+      "password": "$2a$10$d4Gx0d.iFDZWYHFZfo9JG.7EHfaW3W8tk4Qf661mW4JUmvHmLoD5.",
+      "name": "Bob Wilson",
+      "role": "USER",
+      "accounts": [
+        {
+          "id": 3,
+          "accountNumber": "ACC11223344",
+          "balance": 500.25
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "username": "ctOQS",
+      "password": "$2a$10$9IiGEPOWUJUJVyloKqa55.1WkPIU2QQ552CwnTvF6sEq3Rytvssny",
+      "name": null,
+      "role": "USER",
+      "accounts": [
+        {
+          "id": 26,
+          "accountNumber": "ACCF8C3B0F9",
+          "balance": 0.0
+        },
+        {
+          "id": 24,
+          "accountNumber": "ACC6F6D682F",
+          "balance": 4689.0
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "username": "C37IN",
+      "password": "$2a$10$Uf2jBnV18In2Azc4zR59telrt0p9LF/w7vNISHzpz45lZsVnMBjiK",
+      "name": null,
+      "role": "USER",
+      "accounts": []
+    }
+  ],
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic YWRtaW46YWRtaW4="
+  }
+}
