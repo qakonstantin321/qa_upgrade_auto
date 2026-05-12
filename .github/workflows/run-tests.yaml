@@ -177,13 +177,32 @@ jobs:
           ref: gh-pages
           path: gh-pages
 
-      - name: Build test report
-        uses: simple-elf/allure-report-action@v1.7
+      - name: Generate allure report
         if: always() && steps.swagger_gate.outcome == 'success'
-        with:
-          gh_pages: gh-pages
-          allure_results: target/allure-results
-          allure_history: allure-history
+        env:
+          ALLURE_VER: '2.27.0'
+        run: |
+          set -eux
+          RUN="${{ github.run_number }}"
+          wget -q "https://github.com/allure-framework/allure2/releases/download/${ALLURE_VER}/allure-${ALLURE_VER}.tgz"
+          tar -xzf "allure-${ALLURE_VER}.tgz"
+
+          # История трендов из gh-pages (если уже публиковали)
+          if [[ -d gh-pages/history ]]; then
+            mkdir -p target/allure-results/history
+            cp -r gh-pages/history/. target/allure-results/history/ || true
+          else
+            for d in gh-pages/test-report/*/allure-report/history; do
+              if [[ -d "$d" ]]; then
+                mkdir -p target/allure-results/history
+                cp -r "$d"/. target/allure-results/history/ || true
+                break
+              fi
+            done
+          fi
+
+          mkdir -p "allure-history/${RUN}"
+          "./allure-${ALLURE_VER}/bin/allure" generate target/allure-results -o "allure-history/${RUN}" --clean
 
       - name: Assemble GitHub Pages site (test-report / run id)
         if: always() && steps.swagger_gate.outcome == 'success'
