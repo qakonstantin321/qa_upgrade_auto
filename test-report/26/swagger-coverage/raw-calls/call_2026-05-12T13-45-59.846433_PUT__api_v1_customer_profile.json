@@ -1,0 +1,20 @@
+{
+  "method": "PUT",
+  "path": "/api/v1/customer/profile",
+  "originalUrl": "http://localhost:4111/api/v1/customer/profile",
+  "timestamp": "2026-05-12T13:45:59.846433",
+  "statusCode": 400,
+  "requestBody": {
+    "name": "Will Smith1"
+  },
+  "responseBody": {
+    "message": "Name must contain two words with letters only"
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic M2JtbDpMRE9ldndoNjIzJSQ="
+  }
+}

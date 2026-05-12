@@ -1,0 +1,25 @@
+{
+  "method": "POST",
+  "path": "/api/v1/accounts/deposit",
+  "originalUrl": "http://localhost:4111/api/v1/accounts/deposit",
+  "timestamp": "2026-05-12T13:46:37.910400",
+  "statusCode": 200,
+  "requestBody": {
+    "accountId": 46,
+    "amount": 5000
+  },
+  "responseBody": {
+    "id": 46,
+    "accountNumber": "ACC5C07EA16",
+    "balance": 10000.0,
+    "depositAmount": 5000.0,
+    "transactionId": 57
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic N3N4RTVXSFplbkpTaTpDQ0FhZ2xpNDUxJSY="
+  }
+}

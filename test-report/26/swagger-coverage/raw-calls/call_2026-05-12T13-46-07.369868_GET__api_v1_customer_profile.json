@@ -1,0 +1,21 @@
+{
+  "method": "GET",
+  "path": "/api/v1/customer/profile",
+  "originalUrl": "http://localhost:4111/api/v1/customer/profile",
+  "timestamp": "2026-05-12T13:46:07.369868",
+  "statusCode": 200,
+  "requestBody": null,
+  "responseBody": {
+    "id": 31,
+    "username": "9kKHtTz",
+    "name": "Joshua Gomez",
+    "role": "USER"
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic OWtLSHRUejpKU0Ric3JkNDY2JiQ="
+  }
+}

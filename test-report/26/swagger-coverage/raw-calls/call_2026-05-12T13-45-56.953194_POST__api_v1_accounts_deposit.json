@@ -1,0 +1,21 @@
+{
+  "method": "POST",
+  "path": "/api/v1/accounts/deposit",
+  "originalUrl": "http://localhost:4111/api/v1/accounts/deposit",
+  "timestamp": "2026-05-12T13:45:56.953194",
+  "statusCode": 403,
+  "requestBody": {
+    "accountId": 8,
+    "amount": 57.7
+  },
+  "responseBody": {
+    "message": "Unauthorized access to account"
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic Snc3czJpRExKOlNJR21leHQ0MTAkJA=="
+  }
+}

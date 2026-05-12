@@ -1,0 +1,9 @@
+{
+  "coverage_percent": 84.62,
+  "total_endpoints": 13,
+  "covered_endpoints": 11,
+  "uncovered_endpoints": 2,
+  "actual_calls": 575,
+  "error": false,
+  "swagger_url": "http://localhost:4111/v3/api-docs"
+}
