@@ -1,0 +1,21 @@
+{
+  "method": "POST",
+  "path": "/api/v1/auth/login",
+  "originalUrl": "http://localhost:4111/api/v1/auth/login",
+  "timestamp": "2026-05-12T14:03:42.777657",
+  "statusCode": 200,
+  "requestBody": {
+    "username": "ULN3dSi",
+    "password": "YWTzhzt592&$"
+  },
+  "responseBody": {
+    "role": "USER",
+    "username": "ULN3dSi"
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "method": "PUT",
+  "path": "/api/v1/customer/profile",
+  "originalUrl": "http://localhost:4111/api/v1/customer/profile",
+  "timestamp": "2026-05-12T14:03:13.148429",
+  "statusCode": 400,
+  "requestBody": {
+    "name": "\u041f\u0435\u0442\u0440 \u0418\u0432\u0430\u043d\u043e\u0432"
+  },
+  "responseBody": {
+    "message": "Name must contain two words with letters only"
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic U2xjaGtMd2s2NE9KNjgzOkdZRmNvanYyMDElJA=="
+  }
+}

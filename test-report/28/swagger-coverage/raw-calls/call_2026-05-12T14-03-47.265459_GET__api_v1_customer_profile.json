@@ -1,0 +1,21 @@
+{
+  "method": "GET",
+  "path": "/api/v1/customer/profile",
+  "originalUrl": "http://localhost:4111/api/v1/customer/profile",
+  "timestamp": "2026-05-12T14:03:47.265459",
+  "statusCode": 200,
+  "requestBody": null,
+  "responseBody": {
+    "id": 51,
+    "username": "sfdoA1",
+    "name": "David Wood",
+    "role": "USER"
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic c2Zkb0ExOklUTXV2bXgxMTMkJQ=="
+  }
+}

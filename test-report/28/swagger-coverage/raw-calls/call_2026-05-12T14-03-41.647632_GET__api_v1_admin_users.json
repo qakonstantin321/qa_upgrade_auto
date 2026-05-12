@@ -1,0 +1,97 @@
+{
+  "method": "GET",
+  "path": "/api/v1/admin/users",
+  "originalUrl": "http://localhost:4111/api/v1/admin/users",
+  "timestamp": "2026-05-12T14:03:41.647632",
+  "statusCode": 200,
+  "requestBody": null,
+  "responseBody": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "$2a$10$ialR8PjfWr5S6DAfl4ywPOh.rhw5UBIVTELTMFt5/v37m21odnUqC",
+      "name": "System Administrator",
+      "role": "ADMIN",
+      "accounts": []
+    },
+    {
+      "id": 2,
+      "username": "john_doe",
+      "password": "$2a$10$d4Gx0d.iFDZWYHFZfo9JG.7EHfaW3W8tk4Qf661mW4JUmvHmLoD5.",
+      "name": "John Doe",
+      "role": "USER",
+      "accounts": [
+        {
+          "id": 1,
+          "accountNumber": "ACC12345678",
+          "balance": 1000.0
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "username": "jane_smith",
+      "password": "$2a$10$d4Gx0d.iFDZWYHFZfo9JG.7EHfaW3W8tk4Qf661mW4JUmvHmLoD5.",
+      "name": "Jane Smith",
+      "role": "USER",
+      "accounts": [
+        {
+          "id": 2,
+          "accountNumber": "ACC87654321",
+          "balance": 2500.5
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "username": "bob_wilson",
+      "password": "$2a$10$d4Gx0d.iFDZWYHFZfo9JG.7EHfaW3W8tk4Qf661mW4JUmvHmLoD5.",
+      "name": "Bob Wilson",
+      "role": "USER",
+      "accounts": [
+        {
+          "id": 3,
+          "accountNumber": "ACC11223344",
+          "balance": 500.25
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "username": "ak1toBdSokYj98D",
+      "password": "$2a$10$3pWSa.rihqHp8YuF5qD6Re4lUJ0UR78SMehCcllXZudQXVCqo6R2W",
+      "name": null,
+      "role": "USER",
+      "accounts": [
+        {
+          "id": 34,
+          "accountNumber": "ACC9E19B664",
+          "balance": 0.0
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "username": "3tdfjD1SRvxt",
+      "password": "$2a$10$3pT54MMUni6gbxjhlbpdXucdiJG9r0p7aANen6/SwmBgEX.0vEUZe",
+      "name": null,
+      "role": "USER",
+      "accounts": []
+    },
+    {
+      "id": 46,
+      "username": "N58Y7QYng",
+      "password": "$2a$10$Aq8Dvl5mX2j8qvyT2JKPJOp1ENiYQQJmaSOqkKRagRnUl.BuCO9d6",
+      "name": null,
+      "role": "USER",
+      "accounts": []
+    }
+  ],
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic YWRtaW46YWRtaW4="
+  }
+}

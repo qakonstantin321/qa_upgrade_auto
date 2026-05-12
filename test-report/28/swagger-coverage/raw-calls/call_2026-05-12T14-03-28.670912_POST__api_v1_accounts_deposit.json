@@ -1,0 +1,25 @@
+{
+  "method": "POST",
+  "path": "/api/v1/accounts/deposit",
+  "originalUrl": "http://localhost:4111/api/v1/accounts/deposit",
+  "timestamp": "2026-05-12T14:03:28.670912",
+  "statusCode": 200,
+  "requestBody": {
+    "accountId": 31,
+    "amount": 5000
+  },
+  "responseBody": {
+    "id": 31,
+    "accountNumber": "ACCA595FCFA",
+    "balance": 15000.0,
+    "depositAmount": 5000.0,
+    "transactionId": 37
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic cG1IcnpzamgyOktVVGRoYm04OTcmJA=="
+  }
+}

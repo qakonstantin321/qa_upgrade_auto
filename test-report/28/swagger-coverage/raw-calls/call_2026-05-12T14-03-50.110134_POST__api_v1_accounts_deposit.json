@@ -1,0 +1,25 @@
+{
+  "method": "POST",
+  "path": "/api/v1/accounts/deposit",
+  "originalUrl": "http://localhost:4111/api/v1/accounts/deposit",
+  "timestamp": "2026-05-12T14:03:50.110134",
+  "statusCode": 200,
+  "requestBody": {
+    "accountId": 42,
+    "amount": 5000
+  },
+  "responseBody": {
+    "id": 42,
+    "accountNumber": "ACCC32BDE57",
+    "balance": 10000.0,
+    "depositAmount": 5000.0,
+    "transactionId": 49
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic NDEya2RqUmVteXpRYkw6VkpSamJybzU1OCUm"
+  }
+}
