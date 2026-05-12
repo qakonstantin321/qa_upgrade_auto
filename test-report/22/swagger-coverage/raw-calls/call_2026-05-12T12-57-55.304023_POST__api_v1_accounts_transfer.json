@@ -1,0 +1,22 @@
+{
+  "method": "POST",
+  "path": "/api/v1/accounts/transfer",
+  "originalUrl": "http://localhost:4111/api/v1/accounts/transfer",
+  "timestamp": "2026-05-12T12:57:55.304023",
+  "statusCode": 400,
+  "requestBody": {
+    "senderAccountId": 13,
+    "receiverAccountId": 17,
+    "amount": -100.0
+  },
+  "responseBody": {
+    "message": "Invalid transfer: insufficient funds or invalid accounts"
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic VUZ5QjpLRk16ZG9xNTc2JiY="
+  }
+}

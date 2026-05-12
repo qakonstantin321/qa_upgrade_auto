@@ -1,0 +1,27 @@
+{
+  "method": "POST",
+  "path": "/api/v1/admin/users",
+  "originalUrl": "http://localhost:4111/api/v1/admin/users",
+  "timestamp": "2026-05-12T12:57:53.739817",
+  "statusCode": 201,
+  "requestBody": {
+    "username": "qcnUGOXaK",
+    "password": "PWCkfcp961$&",
+    "role": "USER"
+  },
+  "responseBody": {
+    "id": 17,
+    "username": "qcnUGOXaK",
+    "password": "$2a$10$o2JosJckzVsNKvfy1UmF5.AW2nzwJtaMCZGLwUVlz60ejFNgD7ayq",
+    "name": null,
+    "role": "USER",
+    "accounts": []
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic YWRtaW46YWRtaW4="
+  }
+}

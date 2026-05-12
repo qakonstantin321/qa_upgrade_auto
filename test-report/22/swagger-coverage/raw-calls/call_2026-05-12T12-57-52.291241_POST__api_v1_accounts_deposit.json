@@ -1,0 +1,25 @@
+{
+  "method": "POST",
+  "path": "/api/v1/accounts/deposit",
+  "originalUrl": "http://localhost:4111/api/v1/accounts/deposit",
+  "timestamp": "2026-05-12T12:57:52.291241",
+  "statusCode": 200,
+  "requestBody": {
+    "accountId": 6,
+    "amount": 619.46
+  },
+  "responseBody": {
+    "id": 6,
+    "accountNumber": "ACC3A980F35",
+    "balance": 619.46,
+    "depositAmount": 619.46,
+    "transactionId": 5
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic RGRxRnR4bGc6S0VLd2x4aDUzNiQm"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "method": "GET",
+  "path": "/api/v1/accounts/{id}/transactions",
+  "originalUrl": "http://localhost:4111/api/v1/accounts/29/transactions",
+  "timestamp": "2026-05-12T12:58:12.287169",
+  "statusCode": 200,
+  "requestBody": null,
+  "responseBody": [
+    {
+      "id": 38,
+      "amount": 5000.0,
+      "type": "TRANSFER_IN",
+      "timestamp": "2026-05-12T12:58:12.113693",
+      "relatedAccountId": 28,
+      "status": "COMPLETED",
+      "fraudCheckRequired": false
+    }
+  ],
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic a3EweFZBOkNGRmNtdnIzODQlJg=="
+  }
+}
