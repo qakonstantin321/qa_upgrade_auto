@@ -1,0 +1,21 @@
+{
+  "method": "GET",
+  "path": "/api/v1/customer/profile",
+  "originalUrl": "http://localhost:4111/api/v1/customer/profile",
+  "timestamp": "2026-05-12T13:55:55.365166",
+  "statusCode": 200,
+  "requestBody": null,
+  "responseBody": {
+    "id": 32,
+    "username": "ABfu182KGHXv83",
+    "name": "Jeffrey Collins",
+    "role": "USER"
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic QUJmdTE4MktHSFh2ODM6QVBYYXVyZjQ0MCQl"
+  }
+}

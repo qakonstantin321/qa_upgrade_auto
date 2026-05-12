@@ -1,0 +1,26 @@
+{
+  "method": "POST",
+  "path": "/api/v1/admin/users",
+  "originalUrl": "http://localhost:4111/api/v1/admin/users",
+  "timestamp": "2026-05-12T13:55:42.938586",
+  "statusCode": 400,
+  "requestBody": {
+    "username": "",
+    "password": "y7nw9A!8LF",
+    "role": "USER"
+  },
+  "responseBody": {
+    "username": [
+      "Username must be between 3 and 15 characters",
+      "Username must contain only letters, digits, dashes, underscores, and dots",
+      "Username cannot be blank"
+    ]
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic YWRtaW46YWRtaW4="
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "method": "PUT",
+  "path": "/api/v1/customer/profile",
+  "originalUrl": "http://localhost:4111/api/v1/customer/profile",
+  "timestamp": "2026-05-12T13:55:47.542046",
+  "statusCode": 200,
+  "requestBody": {
+    "name": "SzwoXoi YDQnkmWlODNy"
+  },
+  "responseBody": {
+    "id": 21,
+    "username": "WE2lMd64mY9W4E8",
+    "name": "SzwoXoi YDQnkmWlODNy",
+    "role": "USER"
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic V0UybE1kNjRtWTlXNEU4OlZJU2l4aXAwNjElJA=="
+  }
+}
