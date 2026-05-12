@@ -1,0 +1,21 @@
+{
+  "method": "GET",
+  "path": "/api/v1/customer/profile",
+  "originalUrl": "http://localhost:4111/api/v1/customer/profile",
+  "timestamp": "2026-05-12T13:40:27.102922",
+  "statusCode": 200,
+  "requestBody": null,
+  "responseBody": {
+    "id": 42,
+    "username": "v08cusdIbjVz",
+    "name": "Laura Martin",
+    "role": "USER"
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic djA4Y3VzZElialZ6OlFDWGJ6dWc1OTAmJA=="
+  }
+}

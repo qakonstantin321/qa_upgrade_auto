@@ -1,0 +1,25 @@
+{
+  "method": "POST",
+  "path": "/api/v1/accounts/transfer",
+  "originalUrl": "http://localhost:4111/api/v1/accounts/transfer",
+  "timestamp": "2026-05-12T13:40:08.477453",
+  "statusCode": 200,
+  "requestBody": {
+    "senderAccountId": 14,
+    "receiverAccountId": 15,
+    "amount": 2610.0
+  },
+  "responseBody": {
+    "senderAccountId": 14,
+    "message": "Transfer successful",
+    "amount": 2610.0,
+    "receiverAccountId": 15
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic YW1VZnpXVTQ6R0JDYXhsejk3MCYl"
+  }
+}

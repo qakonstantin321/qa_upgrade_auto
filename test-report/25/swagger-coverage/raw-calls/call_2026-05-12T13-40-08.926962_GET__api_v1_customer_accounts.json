@@ -1,0 +1,27 @@
+{
+  "method": "GET",
+  "path": "/api/v1/customer/accounts",
+  "originalUrl": "http://localhost:4111/api/v1/customer/accounts",
+  "timestamp": "2026-05-12T13:40:08.926962",
+  "statusCode": 200,
+  "requestBody": null,
+  "responseBody": [
+    {
+      "id": 14,
+      "accountNumber": "ACC916C5B87",
+      "balance": 0.0
+    },
+    {
+      "id": 15,
+      "accountNumber": "ACCB8EF2C01",
+      "balance": 2610.0
+    }
+  ],
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic YW1VZnpXVTQ6R0JDYXhsejk3MCYl"
+  }
+}

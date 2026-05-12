@@ -1,0 +1,298 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Swagger API Coverage Report</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .card { 
+            background: white; 
+            border-radius: 12px; 
+            padding: 24px; 
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; margin-bottom: 8px; font-size: 28px; }
+        .timestamp { color: #666; margin-bottom: 20px; font-size: 14px; }
+        .summary { 
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .stat-number { font-size: 36px; font-weight: bold; }
+        .stat-label { font-size: 14px; opacity: 0.9; margin-top: 8px; }
+        .coverage-bar { 
+            background: #e0e0e0; 
+            height: 40px; 
+            border-radius: 20px; 
+            overflow: hidden; 
+            margin: 20px 0;
+        }
+        .coverage-fill { 
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            height: 100%; 
+            color: white; 
+            text-align: center; 
+            line-height: 40px;
+            font-weight: bold;
+            transition: width 0.5s ease;
+        }
+        .section-title {
+            font-size: 20px;
+            margin: 20px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .endpoint { 
+            margin: 10px 0; 
+            padding: 15px; 
+            border-left: 4px solid;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+        .endpoint:hover { transform: translateX(5px); }
+        .covered { 
+            border-left-color: #4CAF50; 
+            background: #f0fff0;
+        }
+        .uncovered { 
+            border-left-color: #f44336; 
+            background: #fff0f0;
+        }
+        .method { 
+            display: inline-block; 
+            padding: 4px 10px; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            margin-right: 12px;
+            font-size: 12px;
+        }
+        .GET { background: #61affe; color: white; }
+        .POST { background: #49cc90; color: white; }
+        .PUT { background: #fca130; color: white; }
+        .DELETE { background: #f93e3e; color: white; }
+        .PATCH { background: #50e3c2; color: white; }
+        .path { font-family: 'Courier New', monospace; font-size: 14px; }
+        .summary-text { color: #666; margin-left: 12px; font-size: 13px; }
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin-left: 10px;
+        }
+        .badge-success { background: #4CAF50; color: white; }
+        .badge-danger { background: #f44336; color: white; }
+        .filter-buttons {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            background: #f0f0f0;
+            transition: all 0.3s;
+        }
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        .hidden { display: none; }
+        .call-stats {
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>📊 Swagger API Coverage Report</h1>
+            <div class="timestamp">Generated: 2026-05-12 13:40:58</div>
+            
+            
+            <div class="summary">
+                <div class="stat-card">
+                    <div class="stat-number">13</div>
+                    <div class="stat-label">Total Endpoints</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">11</div>
+                    <div class="stat-label">Covered</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Uncovered</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">573</div>
+                    <div class="stat-label">Actual API Calls</div>
+                </div>
+            </div>
+            
+            <div class="coverage-bar">
+                <div class="coverage-fill" style="width: 84.61538461538461%">
+                    84.6% Coverage
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All (13)</button>
+                <button class="filter-btn" data-filter="covered">✅ Covered (11)</button>
+                <button class="filter-btn" data-filter="uncovered">❌ Uncovered (2)</button>
+            </div>
+            
+            <div id="endpoints-container">
+                <div class="section-title">✅ Covered Endpoints</div>
+                <div id="covered-endpoints">
+
+                    <div class="endpoint covered" data-type="covered">
+                        <span class="method GET">GET</span>
+                        <code class="path">/api/v1/customer/profile</code>
+                        <span class="summary-text">Get customer profile</span>
+                        <div class='call-stats'>📞 Called 15 time(s) | Status codes: 200</div>
+                    </div>
+
+                    <div class="endpoint covered" data-type="covered">
+                        <span class="method PUT">PUT</span>
+                        <code class="path">/api/v1/customer/profile</code>
+                        <span class="summary-text">Update customer profile</span>
+                        <div class='call-stats'>📞 Called 6 time(s) | Status codes: 400, 200</div>
+                    </div>
+
+                    <div class="endpoint covered" data-type="covered">
+                        <span class="method POST">POST</span>
+                        <code class="path">/api/v1/auth/login</code>
+                        <span class="summary-text">User login</span>
+                        <div class='call-stats'>📞 Called 234 time(s) | Status codes: 200</div>
+                    </div>
+
+                    <div class="endpoint covered" data-type="covered">
+                        <span class="method GET">GET</span>
+                        <code class="path">/api/v1/admin/users</code>
+                        <span class="summary-text">Get all users</span>
+                        <div class='call-stats'>📞 Called 27 time(s) | Status codes: 200</div>
+                    </div>
+
+                    <div class="endpoint covered" data-type="covered">
+                        <span class="method POST">POST</span>
+                        <code class="path">/api/v1/admin/users</code>
+                        <span class="summary-text">Create a new user</span>
+                        <div class='call-stats'>📞 Called 60 time(s) | Status codes: 400, 201</div>
+                    </div>
+
+                    <div class="endpoint covered" data-type="covered">
+                        <span class="method POST">POST</span>
+                        <code class="path">/api/v1/accounts</code>
+                        <span class="summary-text">Create an account</span>
+                        <div class='call-stats'>📞 Called 52 time(s) | Status codes: 201</div>
+                    </div>
+
+                    <div class="endpoint covered" data-type="covered">
+                        <span class="method POST">POST</span>
+                        <code class="path">/api/v1/accounts/transfer</code>
+                        <span class="summary-text">Transfer money</span>
+                        <div class='call-stats'>📞 Called 5 time(s) | Status codes: 400, 200</div>
+                    </div>
+
+                    <div class="endpoint covered" data-type="covered">
+                        <span class="method POST">POST</span>
+                        <code class="path">/api/v1/accounts/deposit</code>
+                        <span class="summary-text">Deposit money</span>
+                        <div class='call-stats'>📞 Called 59 time(s) | Status codes: 200, 403, 400</div>
+                    </div>
+
+                    <div class="endpoint covered" data-type="covered">
+                        <span class="method GET">GET</span>
+                        <code class="path">/api/v1/customer/accounts</code>
+                        <span class="summary-text">Get customer accounts</span>
+                        <div class='call-stats'>📞 Called 19 time(s) | Status codes: 200</div>
+                    </div>
+
+                    <div class="endpoint covered" data-type="covered">
+                        <span class="method GET">GET</span>
+                        <code class="path">/api/v1/accounts/{accountId}/transactions</code>
+                        <span class="summary-text">Get account transactions</span>
+                        
+                    </div>
+
+                    <div class="endpoint covered" data-type="covered">
+                        <span class="method DELETE">DELETE</span>
+                        <code class="path">/api/v1/admin/users/{id}</code>
+                        <span class="summary-text">Delete a user by ID</span>
+                        <div class='call-stats'>📞 Called 59 time(s) | Status codes: 200</div>
+                    </div>
+
+                </div>
+                
+                <div class="section-title">❌ Uncovered Endpoints</div>
+                <div id="uncovered-endpoints">
+
+                    <div class="endpoint uncovered" data-type="uncovered">
+                        <span class="method POST">POST</span>
+                        <code class="path">/api/v1/accounts/transfer-with-fraud-check</code>
+                        <span class="summary-text">Transfer money with fraud check</span>
+                    </div>
+
+                    <div class="endpoint uncovered" data-type="uncovered">
+                        <span class="method GET">GET</span>
+                        <code class="path">/api/v1/accounts/fraud-check/{transactionId}</code>
+                        <span class="summary-text">Check fraud detection status</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const allEndpoints = document.querySelectorAll('.endpoint');
+        
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filter = btn.dataset.filter;
+                
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                allEndpoints.forEach(endpoint => {
+                    if (filter === 'all') {
+                        endpoint.classList.remove('hidden');
+                    } else if (filter === 'covered' && endpoint.classList.contains('covered')) {
+                        endpoint.classList.remove('hidden');
+                    } else if (filter === 'uncovered' && endpoint.classList.contains('uncovered')) {
+                        endpoint.classList.remove('hidden');
+                    } else {
+                        endpoint.classList.add('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

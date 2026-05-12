@@ -1,0 +1,21 @@
+{
+  "method": "GET",
+  "path": "/api/v1/customer/profile",
+  "originalUrl": "http://localhost:4111/api/v1/customer/profile",
+  "timestamp": "2026-05-12T13:40:43.298443",
+  "statusCode": 200,
+  "requestBody": null,
+  "responseBody": {
+    "id": 51,
+    "username": "XFH6y7ADMY7",
+    "name": "Corey Pearson",
+    "role": "USER"
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic WEZINnk3QURNWTc6RVFNYmN3ejQzMSUk"
+  }
+}
