@@ -159,26 +159,16 @@ jobs:
           print(f'Report generated: {report}')
           "
 
-      - name: API coverage quality gate
-        id: swagger_gate
-        if: always()
-        env:
-          # workflow_dispatch: значение из inputs; push и др.: по умолчанию 50
-          MIN_SWAGGER_COVERAGE: ${{ github.event.inputs.min_swagger_coverage || '50' }}
-        run: |
-          sudo apt-get update -qq && sudo apt-get install -y jq
-          chmod +x scripts/check_swagger_coverage_gate.sh
-          bash scripts/check_swagger_coverage_gate.sh target/swagger-coverage-metrics.json "$MIN_SWAGGER_COVERAGE"
-
       - name: Load test report history
         uses: actions/checkout@v4
-        if: always() && steps.swagger_gate.outcome == 'success'
+        if: always()
+        continue-on-error: true
         with:
           ref: gh-pages
           path: gh-pages
 
       - name: Generate allure report
-        if: always() && steps.swagger_gate.outcome == 'success'
+        if: always()
         env:
           ALLURE_VER: '2.27.0'
         run: |
@@ -205,68 +195,30 @@ jobs:
           "./allure-${ALLURE_VER}/bin/allure" generate target/allure-results -o "allure-history/${RUN}" --clean
 
       - name: Assemble GitHub Pages site (test-report / run id)
-        if: always() && steps.swagger_gate.outcome == 'success'
+        if: always()
         run: |
           set -eux
-          RUN="${{ github.run_number }}"
-          SITE="gh-pages-site"
-          mkdir -p "${SITE}/test-report/${RUN}/allure-report"
-          mkdir -p "${SITE}/test-report/${RUN}/swagger-coverage/widgets"
-
-          if [[ -d "allure-history/${RUN}" ]] && [[ -f "allure-history/${RUN}/index.html" ]]; then
-            cp -r "allure-history/${RUN}/." "${SITE}/test-report/${RUN}/allure-report/"
-          elif [[ -f "allure-history/index.html" ]]; then
-            cp -r allure-history/. "${SITE}/test-report/${RUN}/allure-report/"
-          else
-            echo "Warning: Allure index not found; writing placeholder."
-            echo '<!DOCTYPE html><html><body><p>Allure report unavailable for this run.</p></body></html>' > "${SITE}/test-report/${RUN}/allure-report/index.html"
-          fi
-
-          if [[ -f target/swagger-coverage-report.html ]]; then
-            cp target/swagger-coverage-report.html "${SITE}/test-report/${RUN}/swagger-coverage/index.html"
-          else
-            echo '<!DOCTYPE html><html><body><p>Swagger coverage HTML missing.</p></body></html>' > "${SITE}/test-report/${RUN}/swagger-coverage/index.html"
-          fi
-
-          if [[ -f target/swagger-coverage-metrics.json ]]; then
-            cp target/swagger-coverage-metrics.json "${SITE}/test-report/${RUN}/swagger-coverage/widgets/coverage.json"
-          else
-            echo '{"coverage_percent":0,"error":true}' > "${SITE}/test-report/${RUN}/swagger-coverage/widgets/coverage.json"
-          fi
-
-          if [[ -d target/swagger-coverage-output ]]; then
-            mkdir -p "${SITE}/test-report/${RUN}/swagger-coverage/raw-calls"
-            cp -r target/swagger-coverage-output/. "${SITE}/test-report/${RUN}/swagger-coverage/raw-calls/" 2>/dev/null || true
-          fi
-
-          cat > "${SITE}/index.html" << EOF
-          <!DOCTYPE html>
-          <html lang="en">
-          <head>
-            <meta charset="utf-8" />
-            <meta http-equiv="refresh" content="0; url=./test-report/${RUN}/allure-report/index.html" />
-            <title>Test reports</title>
-          </head>
-          <body>
-            <p><a href="./test-report/${RUN}/allure-report/index.html">Allure — run ${RUN}</a></p>
-            <p><a href="./test-report/${RUN}/swagger-coverage/index.html">Swagger API coverage — run ${RUN}</a></p>
-          </body>
-          </html>
-          EOF
-
-          ALLURE_IDX="${SITE}/test-report/${RUN}/allure-report/index.html"
-          if [[ -f "$ALLURE_IDX" ]]; then
-            sed -i 's|</body>|<div style="position:fixed;bottom:16px;right:16px;z-index:9999"><a href="../swagger-coverage/index.html" target="_blank" style="background:#4CAF50;color:#fff;padding:10px 16px;text-decoration:none;border-radius:6px;font-family:sans-serif">API coverage</a></div></body>|' "$ALLURE_IDX"
-          fi
+          chmod +x scripts/assemble_gh_pages_site.sh
+          scripts/assemble_gh_pages_site.sh "${{ github.run_number }}" gh-pages-site
 
       - name: Publish test report
         uses: peaceiris/actions-gh-pages@v4
-        if: always() && steps.swagger_gate.outcome == 'success'
+        if: always()
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: gh-pages-site
           keep_files: true
+
+      - name: API coverage quality gate
+        id: swagger_gate
+        if: always()
+        env:
+          MIN_SWAGGER_COVERAGE: ${{ github.event.inputs.min_swagger_coverage || '50' }}
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y jq
+          chmod +x scripts/check_swagger_coverage_gate.sh
+          bash scripts/check_swagger_coverage_gate.sh target/swagger-coverage-metrics.json "$MIN_SWAGGER_COVERAGE"
 
       - name: Shutdown
         if: always()
