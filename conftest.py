@@ -9,6 +9,9 @@ from src.main.api.fixtures.object_fixtures import *  # noqa:
 from src.main.api.fixtures.prepare_data_fixtures import *  # noqa:
 from src.main.api.fixtures.setup_hook import *  # noqa:
 from src.main.api.fixtures.user_fixtures import *  # noqa:
+from swagger_coverage import get_swagger_coverage
+
+coverage = get_swagger_coverage()
 
 
 def _apply_global_seed(seed: int) -> None:
@@ -46,6 +49,12 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         action="store",
         default=os.getenv("API_VERSION"),
         help="Backend version under test. Used with @pytest.mark.api_version(...). Example: --api-version with_database",
+    )
+    parser.addoption(
+        "--no-swagger-coverage",
+        action="store_true",
+        default=False,
+        help="Do not write target/swagger-coverage-report.html at end of session.",
     )
 
 
@@ -142,6 +151,33 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
         filtered.append(item)
 
     items[:] = filtered
+
+
+def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
+    """
+    После прогона собирает HTML (target/swagger-coverage-report.html) из JSON в
+    target/swagger-coverage-output. На воркерах xdist не вызывается генерация.
+    """
+    if session.config.getoption("--no-swagger-coverage"):
+        return
+    if os.environ.get("SWAGGER_COVERAGE_REPORT", "1").strip().lower() in ("0", "false", "no"):
+        return
+    if getattr(session.config, "workerinput", None):
+        return
+
+    swagger_url = os.getenv("SWAGGER_URL", "http://localhost:4111/v3/api-docs")
+    out_html = "target/swagger-coverage-report.html"
+    try:
+        rep = get_swagger_coverage().generate_report(swagger_url)
+        if rep.get("error"):
+            print(f"\n[swagger coverage] HTML written (OpenAPI load failed): {out_html}\n")
+        else:
+            print(
+                f"\n[swagger coverage] Report: {out_html}  "
+                f"({rep.get('coverage_percent', 0):.1f}% of endpoints)\n"
+            )
+    except Exception as e:
+        print(f"\n[swagger coverage] Could not build report: {e}\n")
 
 
 @pytest.fixture(autouse=True)
