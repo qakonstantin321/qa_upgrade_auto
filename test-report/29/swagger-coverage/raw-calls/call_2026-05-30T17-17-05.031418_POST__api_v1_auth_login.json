@@ -1,0 +1,21 @@
+{
+  "method": "POST",
+  "path": "/api/v1/auth/login",
+  "originalUrl": "http://localhost:4111/api/v1/auth/login",
+  "timestamp": "2026-05-30T17:17:05.031418",
+  "statusCode": 200,
+  "requestBody": {
+    "username": "DxPuTSy",
+    "password": "IWYsqlm970&&"
+  },
+  "responseBody": {
+    "role": "USER",
+    "username": "DxPuTSy"
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json"
+  }
+}

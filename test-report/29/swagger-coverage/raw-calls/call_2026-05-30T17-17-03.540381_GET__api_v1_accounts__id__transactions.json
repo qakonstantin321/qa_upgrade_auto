@@ -1,0 +1,26 @@
+{
+  "method": "GET",
+  "path": "/api/v1/accounts/{id}/transactions",
+  "originalUrl": "http://localhost:4111/api/v1/accounts/34/transactions",
+  "timestamp": "2026-05-30T17:17:03.540381",
+  "statusCode": 200,
+  "requestBody": null,
+  "responseBody": [
+    {
+      "id": 40,
+      "amount": 5000.0,
+      "type": "DEPOSIT",
+      "timestamp": "2026-05-30T17:17:03.472996",
+      "relatedAccountId": 34,
+      "status": "COMPLETED",
+      "fraudCheckRequired": false
+    }
+  ],
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic NXozNmE4NDpDTFRreG9jOTQzJiY="
+  }
+}

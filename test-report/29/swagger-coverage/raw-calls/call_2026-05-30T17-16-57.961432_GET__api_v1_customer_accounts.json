@@ -1,0 +1,16 @@
+{
+  "method": "GET",
+  "path": "/api/v1/customer/accounts",
+  "originalUrl": "http://localhost:4111/api/v1/customer/accounts",
+  "timestamp": "2026-05-30T17:16:57.961432",
+  "statusCode": 200,
+  "requestBody": null,
+  "responseBody": [],
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic aUQ2RzdSU1BLMUgxa2U6VUpLbmNmcjcyNiQl"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "method": "POST",
+  "path": "/api/v1/accounts/deposit",
+  "originalUrl": "http://localhost:4111/api/v1/accounts/deposit",
+  "timestamp": "2026-05-30T17:16:36.694397",
+  "statusCode": 200,
+  "requestBody": {
+    "accountId": 14,
+    "amount": 617.45
+  },
+  "responseBody": {
+    "id": 14,
+    "accountNumber": "ACC10409F4B",
+    "balance": 617.45,
+    "depositAmount": 617.45,
+    "transactionId": 14
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic VkE4cFFkVXM6RUxTbHhicDgwMSYk"
+  }
+}

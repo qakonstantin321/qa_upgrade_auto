@@ -1,0 +1,20 @@
+{
+  "method": "POST",
+  "path": "/api/v1/accounts",
+  "originalUrl": "http://localhost:4111/api/v1/accounts",
+  "timestamp": "2026-05-30T17:17:08.366536",
+  "statusCode": 201,
+  "requestBody": null,
+  "responseBody": {
+    "id": 40,
+    "accountNumber": "ACC702DFA30",
+    "balance": 0
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic YWd0Z25hV0RzUUdhbkFCOldaWnF1c200ODMlJQ=="
+  }
+}

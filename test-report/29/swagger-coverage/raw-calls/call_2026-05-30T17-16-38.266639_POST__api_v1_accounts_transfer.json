@@ -1,0 +1,22 @@
+{
+  "method": "POST",
+  "path": "/api/v1/accounts/transfer",
+  "originalUrl": "http://localhost:4111/api/v1/accounts/transfer",
+  "timestamp": "2026-05-30T17:16:38.266639",
+  "statusCode": 400,
+  "requestBody": {
+    "senderAccountId": 18,
+    "receiverAccountId": 19,
+    "amount": 9999999.0
+  },
+  "responseBody": {
+    "message": "Transfer amount cannot exceed 10000"
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic ZGs0OGdBZlozYWI6QkFMZGJjdDUwMyYl"
+  }
+}
