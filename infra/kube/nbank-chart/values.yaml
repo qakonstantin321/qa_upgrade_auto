@@ -1,0 +1,19 @@
+imagePullPolicy: IfNotPresent
+replicaCount: 1
+
+backend:
+  image: nobugsme/nbank:preprod_version
+  port: 4111
+  nodePort: 30411
+
+frontend:
+  image: nobugsme/nbank-ui:preprod_version
+  port: 80
+  nodePort: 30000
+
+postgres:
+  image: postgres:15-alpine
+  port: 5432
+
+secrets:
+  postgresPassword: postgres
