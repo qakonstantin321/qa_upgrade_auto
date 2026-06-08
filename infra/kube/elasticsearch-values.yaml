@@ -1,0 +1,28 @@
+replicas: 1
+minimumMasterNodes: 1
+antiAffinity: soft
+
+esConfig:
+  elasticsearch.yml: |
+    xpack.security.enabled: false
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 768Mi
+  limits:
+    cpu: 500m
+    memory: 1536Mi
+
+readinessProbe:
+  timeoutSeconds: 30
+  periodSeconds: 20
+  failureThreshold: 10
+
+clusterHealthCheckParams: "wait_for_status=yellow&timeout=30s"
+
+volumeClaimTemplate:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 5Gi

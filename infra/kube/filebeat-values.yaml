@@ -1,0 +1,52 @@
+daemonset:
+  enabled: true
+
+filebeatConfig:
+  filebeat.yml: |
+    filebeat.autodiscover:
+      providers:
+        - type: kubernetes
+          node: ${NODE_NAME}
+          hints.enabled: true
+          hints.default_config:
+            type: container
+            paths:
+              - /var/log/containers/*${data.kubernetes.container.id}.log
+    processors:
+      - add_kubernetes_metadata:
+          host: ${NODE_NAME}
+          matchers:
+            - logs_path:
+                logs_path: "/var/log/containers/"
+    output.elasticsearch:
+      hosts: ["http://elasticsearch-master.logging.svc.cluster.local:9200"]
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 256Mi
+  limits:
+    cpu: 200m
+    memory: 512Mi
+
+livenessProbe:
+  exec:
+    command:
+      - sh
+      - -c
+      - "curl --fail --max-time 10 127.0.0.1:5066"
+  initialDelaySeconds: 90
+  periodSeconds: 30
+  timeoutSeconds: 15
+  failureThreshold: 10
+
+readinessProbe:
+  exec:
+    command:
+      - sh
+      - -c
+      - "filebeat test output"
+  initialDelaySeconds: 90
+  periodSeconds: 30
+  timeoutSeconds: 30
+  failureThreshold: 10

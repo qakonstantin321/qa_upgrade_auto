@@ -33,11 +33,19 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: POSTGRES_PASSWORD
-          readinessProbe:
+            - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+              value: health,prometheus,info,metrics
+          startupProbe:
             httpGet:
               path: /actuator/health
               port: {{ .Values.backend.port }}
             initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 60
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: {{ .Values.backend.port }}
             periodSeconds: 10
 ---
 apiVersion: v1

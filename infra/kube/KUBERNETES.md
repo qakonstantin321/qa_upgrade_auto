@@ -106,9 +106,54 @@ kubectl get pods -l app=frontend
 ```
 
 
+## Часть 1 — Мониторинг (Prometheus + Grafana)
+
+После деплоя `nbank`:
+
+```bash
+cd infra/kube
+bash install-monitoring.sh
+```
+
+Проверка:
+
+```bash
+kubectl get servicemonitor -n monitoring
+kubectl get pods -n monitoring
+```
+
+Grafana (логин `admin` / `admin`):
+
+```bash
+kubectl port-forward -n monitoring svc/monitoring-grafana 3030:80
+```
+
+Prometheus → Status → Targets: target `spring-bank-monitor` / backend должен быть **UP**.
+
+Метрики backend: `/actuator/prometheus` (ServiceMonitor в `spring-monitoring.yaml`).
+
+## Часть 2 — Логирование (Elasticsearch + Kibana)
+
+```bash
+cd infra/kube
+bash install-logging.sh
+```
+
+Filebeat собирает логи pod'ов (в т.ч. backend с аннотациями `co.elastic.logs.*`).
+
+Kibana:
+
+```bash
+kubectl port-forward -n logging svc/kibana-kibana 5601:5601
+```
+
+Index pattern: `filebeat-*` или `logs-*`.
+
 ## Удаление
 
 ```bash
 helm uninstall nbank
+helm uninstall monitoring -n monitoring
+helm uninstall filebeat kibana elasticsearch -n logging
 minikube stop
 ```

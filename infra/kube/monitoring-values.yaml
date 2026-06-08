@@ -1,0 +1,24 @@
+grafana:
+  enabled: true
+  service:
+    type: NodePort
+    nodePort: 30300
+  adminUser: admin
+  adminPassword: admin
+
+prometheus:
+  service:
+    type: NodePort
+    nodePort: 30301
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelector:
+      matchLabels:
+        release: monitoring
+    serviceMonitorNamespaceSelector: {}
+
+prometheus-node-exporter:
+  enabled: true
+
+kube-state-metrics:
+  enabled: true
