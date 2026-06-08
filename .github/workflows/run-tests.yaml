@@ -37,15 +37,27 @@ on:
         required: false
         type: string
         default: "4"
+      min_swagger_coverage:
+        description: "Fail job if Swagger API coverage is below this percent (quality gate)"
+        required: false
+        type: string
+        default: "50"
   push:
-    branches: [ main, master, tests-in-pipeline ]
+    branches: [ main, master, tests-in-pipeline, reports ]
     paths:
       - 'src/**'
+      - 'swagger_coverage.py'
+      - 'conftest.py'
+      - 'Dockerfile'
+      - '.github/workflows/**'
+      - 'scripts/**'
 
 jobs:
   run:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 30
+    env:
+      PYTHONPATH: ${{ github.workspace }}
 
     steps:
       - uses: actions/checkout@v6
@@ -65,7 +77,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install flake8
           playwright install --with-deps
 
       - name: Checkstyle (flake8)
@@ -104,11 +115,16 @@ jobs:
           SUITE_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.suite || 'api+ui' }}
           MARKERS_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.markers || '' }}
           NUM_THREADS_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.num_threads || '4' }}
+          SWAGGER_URL: http://localhost:4111/v3/api-docs
+          SWAGGER_COVERAGE_REPORT: "0"
         run: |
           set -eux
           
+          mkdir -p target/allure-results
+          mkdir -p target/swagger-coverage-output
+          
           API_VERSION_INPUT="${API_VERSION_INPUT:-with_database}"
-          SUITE_INPUT="${SUITE_INPUT:-api+ui}}"
+          SUITE_INPUT="${SUITE_INPUT:-api+ui}"
           MARKERS="${MARKERS_INPUT:-}"
           NUM_THREADS="${NUM_THREADS_INPUT:-4}"
           
@@ -120,45 +136,89 @@ jobs:
           fi
           
           if [ "$SUITE_INPUT" = "api" ]; then
-            pytest -m api --api-version "$API_VERSION_INPUT" $M_OPT $N_OPT -q
+            pytest -m api --api-version "$API_VERSION_INPUT" $M_OPT $N_OPT -q --alluredir=target/allure-results
           elif [ "$SUITE_INPUT" = "ui" ]; then
-            pytest -m ui $M_OPT $N_OPT -q
+            pytest -m ui $M_OPT $N_OPT -q --alluredir=target/allure-results
           else
-            pytest -m api --api-version "$API_VERSION_INPUT" $M_OPT $N_OPT -q
-            pytest -m ui $M_OPT $N_OPT -q
+            pytest -m api --api-version "$API_VERSION_INPUT" $M_OPT $N_OPT -q --alluredir=target/allure-results
+            pytest -m ui $M_OPT $N_OPT -q --alluredir=target/allure-results
           fi
 
-      - name: Build Docker image
-        if: github.event_name == 'push' && success()
+      - name: Generate Swagger Coverage Report
+        if: always()
         env:
-          TAG: ${{ github.sha }}
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          IMAGE_NAME: "autotests"
+          SWAGGER_URL: http://localhost:4111/v3/api-docs
         run: |
-          echo "Building Docker image: ${IMAGE_NAME}:${TAG}"
-          docker build -t "${IMAGE_NAME}:${TAG}" .
+          echo "Generating Swagger coverage report..."
+          python -c "
+          from swagger_coverage import get_swagger_coverage
+          import os
+          coverage = get_swagger_coverage()
+          swagger_url = os.getenv('SWAGGER_URL', 'http://localhost:4111/v3/api-docs')
+          report = coverage.generate_report(swagger_url)
+          print(f'Report generated: {report}')
+          "
 
-      - name: Login to Docker Hub
-        if: github.event_name == 'push' && success()
-        uses: docker/login-action@v4
+      - name: Load test report history
+        uses: actions/checkout@v4
+        if: always()
+        continue-on-error: true
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          ref: gh-pages
+          path: gh-pages
 
-      - name: Push Docker image to Docker Hub
-        if: github.event_name == 'push' && success()
+      - name: Generate allure report
+        if: always()
         env:
-          TAG: ${{ github.sha }}
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          IMAGE_NAME: "autotests"
+          ALLURE_VER: '2.27.0'
         run: |
-          FULL_IMAGE_NAME="${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${TAG}"
-          docker tag "${IMAGE_NAME}:${TAG}" "${FULL_IMAGE_NAME}"
-          docker push "${FULL_IMAGE_NAME}"
-          
-          echo "Образ успешно загружен: ${FULL_IMAGE_NAME}"
-          echo "Для скачивания образа выполните:"
-          echo "docker pull ${FULL_IMAGE_NAME}"
+          set -eux
+          RUN="${{ github.run_number }}"
+          wget -q "https://github.com/allure-framework/allure2/releases/download/${ALLURE_VER}/allure-${ALLURE_VER}.tgz"
+          tar -xzf "allure-${ALLURE_VER}.tgz"
+
+          # История трендов из gh-pages (если уже публиковали)
+          if [[ -d gh-pages/history ]]; then
+            mkdir -p target/allure-results/history
+            cp -r gh-pages/history/. target/allure-results/history/ || true
+          else
+            for d in gh-pages/test-report/*/allure-report/history; do
+              if [[ -d "$d" ]]; then
+                mkdir -p target/allure-results/history
+                cp -r "$d"/. target/allure-results/history/ || true
+                break
+              fi
+            done
+          fi
+
+          mkdir -p "allure-history/${RUN}"
+          "./allure-${ALLURE_VER}/bin/allure" generate target/allure-results -o "allure-history/${RUN}" --clean
+
+      - name: Assemble GitHub Pages site (test-report / run id)
+        if: always()
+        run: |
+          set -eux
+          chmod +x scripts/assemble_gh_pages_site.sh
+          scripts/assemble_gh_pages_site.sh "${{ github.run_number }}" gh-pages-site
+
+      - name: Publish test report
+        uses: peaceiris/actions-gh-pages@v4
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: gh-pages-site
+          keep_files: true
+
+      - name: API coverage quality gate
+        id: swagger_gate
+        if: always()
+        env:
+          MIN_SWAGGER_COVERAGE: ${{ github.event.inputs.min_swagger_coverage || '50' }}
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y jq
+          chmod +x scripts/check_swagger_coverage_gate.sh
+          bash scripts/check_swagger_coverage_gate.sh target/swagger-coverage-metrics.json "$MIN_SWAGGER_COVERAGE"
 
       - name: Shutdown
         if: always()

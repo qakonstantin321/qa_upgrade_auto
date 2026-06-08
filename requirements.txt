@@ -9,4 +9,5 @@ pytest-xdist
 psycopg[binary]
 pytest-dotenv
 allure-python-commons
+allure-pytest
 flake8
