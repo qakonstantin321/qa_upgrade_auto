@@ -1,0 +1,21 @@
+{
+  "method": "GET",
+  "path": "/api/v1/customer/profile",
+  "originalUrl": "http://localhost:4111/api/v1/customer/profile",
+  "timestamp": "2026-06-08T08:41:14.740158",
+  "statusCode": 200,
+  "requestBody": null,
+  "responseBody": {
+    "id": 51,
+    "username": "zckqHRld",
+    "name": null,
+    "role": "USER"
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic emNrcUhSbGQ6U0lTaHJkYzM1MyYm"
+  }
+}

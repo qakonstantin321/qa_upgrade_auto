@@ -1,0 +1,16 @@
+{
+  "method": "DELETE",
+  "path": "/api/v1/admin/users/{id}",
+  "originalUrl": "http://localhost:4111/api/v1/admin/users/39",
+  "timestamp": "2026-06-08T08:40:37.109884",
+  "statusCode": 200,
+  "requestBody": null,
+  "responseBody": null,
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic YWRtaW46YWRtaW4="
+  }
+}

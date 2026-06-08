@@ -1,0 +1,53 @@
+{
+  "method": "GET",
+  "path": "/api/v1/accounts/{id}/transactions",
+  "originalUrl": "http://localhost:4111/api/v1/accounts/56/transactions",
+  "timestamp": "2026-06-08T08:41:27.705623",
+  "statusCode": 200,
+  "requestBody": null,
+  "responseBody": [
+    {
+      "id": 69,
+      "amount": 5000.0,
+      "type": "DEPOSIT",
+      "timestamp": "2026-06-08T08:41:26.029782",
+      "relatedAccountId": 56,
+      "status": "COMPLETED",
+      "fraudCheckRequired": false
+    },
+    {
+      "id": 71,
+      "amount": 5000.0,
+      "type": "DEPOSIT",
+      "timestamp": "2026-06-08T08:41:26.433293",
+      "relatedAccountId": 56,
+      "status": "COMPLETED",
+      "fraudCheckRequired": false
+    },
+    {
+      "id": 68,
+      "amount": 5000.0,
+      "type": "DEPOSIT",
+      "timestamp": "2026-06-08T08:41:25.86831",
+      "relatedAccountId": 56,
+      "status": "COMPLETED",
+      "fraudCheckRequired": false
+    },
+    {
+      "id": 70,
+      "amount": 5000.0,
+      "type": "DEPOSIT",
+      "timestamp": "2026-06-08T08:41:26.269325",
+      "relatedAccountId": 56,
+      "status": "COMPLETED",
+      "fraudCheckRequired": false
+    }
+  ],
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic Y0gyQVZZQUVpV3I2QmZNOldERXZuaWY3NTckJQ=="
+  }
+}

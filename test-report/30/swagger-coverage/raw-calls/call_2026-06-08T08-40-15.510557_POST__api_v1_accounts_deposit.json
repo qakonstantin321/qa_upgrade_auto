@@ -1,0 +1,25 @@
+{
+  "method": "POST",
+  "path": "/api/v1/accounts/deposit",
+  "originalUrl": "http://localhost:4111/api/v1/accounts/deposit",
+  "timestamp": "2026-06-08T08:40:15.510557",
+  "statusCode": 200,
+  "requestBody": {
+    "accountId": 14,
+    "amount": 3075.09
+  },
+  "responseBody": {
+    "id": 14,
+    "accountNumber": "ACCA25E89EB",
+    "balance": 3075.09,
+    "depositAmount": 3075.09,
+    "transactionId": 13
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic SVpNdTNtR0I6VExRd294czE3OCUm"
+  }
+}

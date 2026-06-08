@@ -1,0 +1,16 @@
+{
+  "method": "GET",
+  "path": "/api/v1/accounts/{id}/transactions",
+  "originalUrl": "http://localhost:4111/api/v1/accounts/45/transactions",
+  "timestamp": "2026-06-08T08:41:19.686735",
+  "statusCode": 200,
+  "requestBody": null,
+  "responseBody": [],
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic OFI4SW5WR0dWOlBJV3ltd2QzMDUlJg=="
+  }
+}

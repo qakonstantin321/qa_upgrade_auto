@@ -1,0 +1,100 @@
+{
+  "method": "GET",
+  "path": "/api/v1/admin/users",
+  "originalUrl": "http://localhost:4111/api/v1/admin/users",
+  "timestamp": "2026-06-08T08:40:34.374801",
+  "statusCode": 200,
+  "requestBody": null,
+  "responseBody": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "$2a$10$ialR8PjfWr5S6DAfl4ywPOh.rhw5UBIVTELTMFt5/v37m21odnUqC",
+      "name": "System Administrator",
+      "role": "ADMIN",
+      "accounts": []
+    },
+    {
+      "id": 2,
+      "username": "john_doe",
+      "password": "$2a$10$d4Gx0d.iFDZWYHFZfo9JG.7EHfaW3W8tk4Qf661mW4JUmvHmLoD5.",
+      "name": "John Doe",
+      "role": "USER",
+      "accounts": [
+        {
+          "id": 1,
+          "accountNumber": "ACC12345678",
+          "balance": 1000.0
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "username": "jane_smith",
+      "password": "$2a$10$d4Gx0d.iFDZWYHFZfo9JG.7EHfaW3W8tk4Qf661mW4JUmvHmLoD5.",
+      "name": "Jane Smith",
+      "role": "USER",
+      "accounts": [
+        {
+          "id": 2,
+          "accountNumber": "ACC87654321",
+          "balance": 2500.5
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "username": "bob_wilson",
+      "password": "$2a$10$d4Gx0d.iFDZWYHFZfo9JG.7EHfaW3W8tk4Qf661mW4JUmvHmLoD5.",
+      "name": "Bob Wilson",
+      "role": "USER",
+      "accounts": [
+        {
+          "id": 3,
+          "accountNumber": "ACC11223344",
+          "balance": 500.25
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "username": "ndj6Gn",
+      "password": "$2a$10$qqdxQnL3DxuW66/spSf18uNvtmiBc4E/LSZYvnXACIhJvylFai/1G",
+      "name": null,
+      "role": "USER",
+      "accounts": [
+        {
+          "id": 28,
+          "accountNumber": "ACC5E579709",
+          "balance": 5000.0
+        },
+        {
+          "id": 29,
+          "accountNumber": "ACCA8FEA77D",
+          "balance": 0.0
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "username": "E6T4jzeul",
+      "password": "$2a$10$TdQnyxfX6Za8RE3f1S92R.tOR0jX7v4hhv.b345pNeJerMC2IyeoK",
+      "name": null,
+      "role": "USER",
+      "accounts": [
+        {
+          "id": 30,
+          "accountNumber": "ACC98565BDD",
+          "balance": 0.0
+        }
+      ]
+    }
+  ],
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic YWRtaW46YWRtaW4="
+  }
+}

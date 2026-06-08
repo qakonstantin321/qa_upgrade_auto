@@ -1,0 +1,21 @@
+{
+  "method": "POST",
+  "path": "/api/v1/accounts/deposit",
+  "originalUrl": "http://localhost:4111/api/v1/accounts/deposit",
+  "timestamp": "2026-06-08T08:40:13.833810",
+  "statusCode": 400,
+  "requestBody": {
+    "accountId": 7,
+    "amount": 5001.0
+  },
+  "responseBody": {
+    "message": "Deposit amount exceeds the 5000 limit"
+  },
+  "queryParams": {},
+  "pathParams": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Basic Z2pod0wzRzpTR1Z6YnZ5MTM2JCU="
+  }
+}
